@@ -1,0 +1,4 @@
+CoTrek: Toward Scalable On-Policy Distillation for Long Chain-of-Thought Reasoning
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/154397
+OpenReview PDF page: https://openreview.net/forum?id=DsDVXNgrHK
+Automated PDF retrieval unavailable from OpenReview in this environment (HTTP 403 challenge).

@@ -1,0 +1,9 @@
+Title: Draft-OPD: On-Policy Distillation for Speculative Draft Models
+arXiv: https://arxiv.org/abs/2605.29343
+PDF: https://arxiv.org/pdf/2605.29343v3
+Version: v3 (2026-09-18)
+User source: https://www.haodilei.top/draft-opd/
+Code: https://github.com/Simplified-Reasoning/Draft-OPD
+Code commit: d6f0ec859321959785c65b59eb311fd25f042158
+Status: arXiv preprint; conference status not verified
+SHA256: fd0060f298a406f62e2cb564a3698bae953ab455c67f21caf0c94c03b5306e58

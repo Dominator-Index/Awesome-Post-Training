@@ -1,0 +1,7 @@
+Title: RLCSD: Reinforcement Learning with Contrastive On-Policy Self-Distillation
+arXiv: https://arxiv.org/abs/2606.11709
+PDF: https://arxiv.org/pdf/2606.11709v2
+Version: v2 (2026-09-14)
+Code: https://github.com/THU-BPM/RLCSD
+Status: arXiv preprint; conference status not verified
+SHA256: cbaedd5e33fdfbe0edf9a7556230b06a55a0e00ace23dc1c18c96856de6fde23

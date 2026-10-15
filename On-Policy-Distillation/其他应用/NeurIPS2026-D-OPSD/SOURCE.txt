@@ -1,0 +1,3 @@
+D-OPSD: On-Policy Self-Distillation for Continuously Tuning Step-Distilled Diffusion Models
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/153949
+Preprint PDF: https://arxiv.org/pdf/2605.05204

@@ -1,0 +1,25 @@
+{
+  "old_root": "/usr/commondata/public/hf_hub/cc/awesome-exploration-rl/On-Policy-Distillation",
+  "new_root": "/usr/data/Awesome-Post-Training/On-Policy-Distillation",
+  "workspace_link": "/usr/commondata/public/hf_hub/cc/awesome-exploration-rl/Awesome-Post-Training",
+  "paper_moves": {
+    "2026-STOPD": "训练机制与稳定性/2026-STOPD",
+    "ICLR2027-AOPD": "训练机制与稳定性/ICLR2027-AOPD",
+    "ICLR2027-DIAL-OPD": "训练机制与稳定性/ICLR2027-DIAL-OPD",
+    "arXiv2026-AC2": "训练机制与稳定性/arXiv2026-AC2",
+    "arXiv2026-CorrGRPO": "训练机制与稳定性/arXiv2026-CorrGRPO",
+    "arXiv2026-DN-MOPD": "训练机制与稳定性/arXiv2026-DN-MOPD",
+    "arXiv2026-Dr.OPD": "训练机制与稳定性/arXiv2026-Dr.OPD",
+    "arXiv2026-DuoOPD": "训练机制与稳定性/arXiv2026-DuoOPD",
+    "arXiv2026-PowerOPD": "训练机制与稳定性/arXiv2026-PowerOPD",
+    "arXiv2026-OPSD": "语言模型与推理/arXiv2026-OPSD",
+    "arXiv2026-RLCSD": "语言模型与推理/arXiv2026-RLCSD",
+    "arXiv2026-DF-OPD": "语言模型与推理/arXiv2026-DF-OPD",
+    "ICLR2027-ReDraft": "多模态与交互/ICLR2027-ReDraft",
+    "ICLR2027-PIVOT": "多模态与交互/ICLR2027-PIVOT",
+    "arXiv2026-Draft-OPD": "其他应用/arXiv2026-Draft-OPD",
+    "训练机制与稳定性/NeurIPS2026-TrOPD": "训练机制与稳定性/arXiv2026-TrOPD",
+    "53047_When_to_Follow_the_Teach.pdf": "_sources/53047_When_to_Follow_the_Teach.pdf"
+  },
+  "paper_records": 45
+}

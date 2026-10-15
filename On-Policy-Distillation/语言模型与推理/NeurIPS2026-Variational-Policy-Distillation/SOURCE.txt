@@ -1,0 +1,3 @@
+Learning from Language Feedback via Variational Policy Distillation
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/152357
+Preprint PDF: https://arxiv.org/pdf/2605.15113

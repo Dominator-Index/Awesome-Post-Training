@@ -1,0 +1,3 @@
+Beyond SFT-to-RL: Pre-alignment via Black-box On-policy Distillation for Multimodal RL
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/153111
+Preprint PDF: https://arxiv.org/pdf/2604.28123

@@ -1,0 +1,9 @@
+{
+  "markdown_count": 14,
+  "issues": [],
+  "source_access": {
+    "zhihu": "blocked JS challenge; content not read",
+    "arxiv_and_primary_sources": "read"
+  },
+  "experiment": "isolated offline Qwen2.5-1.5B directional-gradient diagnostic; no online training"
+}

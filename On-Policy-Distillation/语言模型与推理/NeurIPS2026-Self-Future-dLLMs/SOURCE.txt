@@ -1,0 +1,3 @@
+Learning from the Self-future: On-policy Self-distillation for dLLMs
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/153722
+Preprint PDF: https://arxiv.org/pdf/2606.18195

@@ -1,0 +1,4 @@
+Proposing Better Rollouts for On-Policy Distillation
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/155190
+OpenReview PDF page: https://openreview.net/forum?id=7b0JDZvzTQ
+Automated PDF retrieval unavailable from OpenReview in this environment (HTTP 403 challenge).

@@ -1,0 +1,9 @@
+VC-OPD: Visual Counterfactual On-Policy Distillation for Grounded Vision-Language Reasoning
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/152275
+OpenReview PDF page: https://openreview.net/forum?id=UIRHh7xJPJ
+Automated PDF retrieval unavailable from OpenReview in this environment (HTTP 403 challenge).
+
+2026-10-15 archive update:
+Downloaded version: https://arxiv.org/pdf/2610.14939
+SHA256: 0f280741ab1b8f656533411f2d392e92980fa8d69e9e4281d4d902cefc2b8535
+The downloaded arXiv version is archived separately from the unverified OpenReview version; matching title/method alone does not establish identical versions.

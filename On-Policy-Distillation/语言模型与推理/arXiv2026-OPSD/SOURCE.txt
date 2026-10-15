@@ -1,0 +1,8 @@
+Title: Self-Distilled Reasoner: On-Policy Self-Distillation for Large Language Models
+Authors: Siyan Zhao, Zhihui Xie, Mengchen Liu, Jing Huang, Guan Pang, Feiyu Chen, Aditya Grover
+arXiv: https://arxiv.org/abs/2601.18734
+PDF: https://arxiv.org/pdf/2601.18734v3
+Version: v3 (2026-03-20)
+First submitted: 2026-01-26
+Downloaded: 2026-10-07
+Directory prefix denotes the arXiv publication year, not a conference acceptance.

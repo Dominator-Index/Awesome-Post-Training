@@ -1,0 +1,30 @@
+OK	f-OPD: Stabilizing Long-Horizon On-Policy Distillation with Freshness-Aware Control	2129050	2605.17862
+OK	AsyncOPD: How Stale Can On-Policy Distillation Be?	1229223	2606.24143
+OK	Behavior Cloning is Not All You Need: The Optimality of On-Policy Distillation for Noisy Expert Feedback	1499930	2606.30923
+OK	Cornerstones or Stumbling Blocks? Deciphering the Rock Tokens in On-Policy Distillation	862464	2605.09253
+OK	KL for a KL: On-Policy Distillation with Control Variate Baseline	2773431	2605.07865
+OK	Learning to Foresee: Unveiling the Unlocking Efficiency of On-Policy Distillation	49949428	2605.11739
+PENDING_OPENREVIEW_403	Proposing Better Rollouts for On-Policy Distillation	https://openreview.net/forum?id=7b0JDZvzTQ
+PENDING_OPENREVIEW_403	Relaxed On-Policy Distillation: Selective Credit Allocation for Scaling Reasoning Efficiently	https://openreview.net/forum?id=l0h1SzRI7H
+OK	SEAD: Competence-Aware On-Policy Distillation via Entropy-Guided Supervision	897013	2606.28562
+OK	SimCT: Recovering Lost Supervision for Cross-Tokenizer On-Policy Distillation	1508153	2605.07711
+OK	The Many Faces of On-Policy Distillation: Pitfalls, Mechanisms, and Fixes	9867624	2605.11182
+OK	Trust Region Policy Distillation	598143	2607.04751
+OK	When Are Teacher Tokens Reliable? Position-Weighted On-Policy Self-Distillation for Reasoning	611583	2605.21606
+OK	Your Teacher Can’t Help You Here: Combating Supervision Fidelity Decay in On-Policy Distillation	20495464	2605.30833
+PENDING_OPENREVIEW_403	CoTrek: Toward Scalable On-Policy Distillation for Long Chain-of-Thought Reasoning	https://openreview.net/forum?id=DsDVXNgrHK
+OK	Co-Evolving Policy Distillation	5254890	2604.27083
+OK	Learning from Language Feedback via Variational Policy Distillation	2787446	2605.15113
+OK	Rethinking On-Policy Self-Distillation for Thinking Models	998744	2607.05184
+OK	Training with Harnesses: On-Policy Harness Self-Distillation for Complex Reasoning	898190	2605.08741
+OK	On-Policy Distillation with Open Property-Equivalence Reward for LLM-Based NL-to-SVA Generation	1309627	2605.13501
+OK	Learning from the Self-future: On-policy Self-distillation for dLLMs	2445593	2606.18195
+OK	Beyond SFT-to-RL: Pre-alignment via Black-box On-policy Distillation for Multimodal RL	1415717	2604.28123
+PENDING_OPENREVIEW_403	Fewer Tokens, Fewer Layers: Efficient Vision Token Pruning and On-Policy Distillation to Accelerate VLMs	https://openreview.net/forum?id=T7WbWqjpqm
+PENDING_OPENREVIEW_403	VC-OPD: Visual Counterfactual On-Policy Distillation for Grounded Vision-Language Reasoning	https://openreview.net/forum?id=UIRHh7xJPJ
+OK	Vision-OPD: Learning to See Fine Details for Multimodal LLMs via On-Policy Self-Distillation	4679759	2605.18740
+OK	Visual-Advantage On-Policy Distillation for Vision-Language Models	2141273	2605.21924
+OK	Learn where to Click from Yourself: On-Policy Self-Distillation for GUI Grounding	4534126	2605.00642
+OK	D-OPSD: On-Policy Self-Distillation for Continuously Tuning Step-Distilled Diffusion Models	9871964	2605.05204
+PENDING_OPENREVIEW_403	On-Policy Hindsight Distillation for Early Risk Prediction	https://openreview.net/forum?id=L26pEowauj
+OK	Trust Region On-Policy Distillation (TrOPD)	438272	2606.01249

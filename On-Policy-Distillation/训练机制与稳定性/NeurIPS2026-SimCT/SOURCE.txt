@@ -1,0 +1,3 @@
+SimCT: Recovering Lost Supervision for Cross-Tokenizer On-Policy Distillation
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/153233
+Preprint PDF: https://arxiv.org/pdf/2605.07711

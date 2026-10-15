@@ -1,0 +1,4 @@
+Trust Region On-Policy Distillation
+Authors: Xingrun Xing, Haoqing Wang, Boyan Gao, Ziheng Li, Yehui Tang
+arXiv: https://arxiv.org/abs/2606.01249 (version 3, 2026-06-17)
+PDF: https://arxiv.org/pdf/2606.01249

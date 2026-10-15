@@ -1,0 +1,4 @@
+Fewer Tokens, Fewer Layers: Efficient Vision Token Pruning and On-Policy Distillation to Accelerate VLMs
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/152441
+OpenReview PDF page: https://openreview.net/forum?id=T7WbWqjpqm
+Automated PDF retrieval unavailable from OpenReview in this environment (HTTP 403 challenge).

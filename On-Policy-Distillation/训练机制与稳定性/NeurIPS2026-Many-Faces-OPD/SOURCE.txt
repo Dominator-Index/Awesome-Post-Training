@@ -1,0 +1,3 @@
+The Many Faces of On-Policy Distillation: Pitfalls, Mechanisms, and Fixes
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/153073
+Preprint PDF: https://arxiv.org/pdf/2605.11182

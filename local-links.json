@@ -1,0 +1,81 @@
+{
+  "description": "本机代码与实验入口；发布时不提交这些绝对路径软链接，目标均保留在/usr/data。",
+  "links": [
+    {
+      "path": "训练机制与稳定性/NeurIPS2026-KL-Control-Variate/main",
+      "target": "/usr/data/vOPD"
+    },
+    {
+      "path": "语言模型与推理/arXiv2026-OPSD/main",
+      "target": "/usr/data/OPSD"
+    },
+    {
+      "path": "idea/001-BQ-OPD-experiments",
+      "target": "/usr/data/OPD-BQ-Pilot"
+    },
+    {
+      "path": "idea/002-DR-OPD-experiments",
+      "target": "/usr/data/STOPD-DR-Online"
+    },
+    {
+      "path": "训练机制与稳定性/arXiv2026-Dr.OPD/main",
+      "target": "/usr/data/Dr-OPD"
+    },
+    {
+      "path": "训练机制与稳定性/arXiv2026-CorrGRPO/main",
+      "target": "/usr/data/CorrGRPO"
+    },
+    {
+      "path": "语言模型与推理/arXiv2026-RLCSD/main",
+      "target": "/usr/data/RLCSD"
+    },
+    {
+      "path": "其他应用/arXiv2026-Draft-OPD/main",
+      "target": "/usr/data/Draft-OPD"
+    },
+    {
+      "path": "语言模型与推理/arXiv2026-DF-OPD/main",
+      "target": "/usr/data/DF-OPD"
+    },
+    {
+      "path": "训练机制与稳定性/arXiv2026-AC2/main",
+      "target": "/usr/data/AC2"
+    },
+    {
+      "path": "训练机制与稳定性/arXiv2026-AC2/AC2",
+      "target": "main"
+    },
+    {
+      "path": "训练机制与稳定性/arXiv2026-AC2/AC2-Trust-the-Critic-More.pdf",
+      "target": "paper.pdf"
+    },
+    {
+      "path": "训练机制与稳定性/2026-STOPD/main",
+      "target": "/usr/data/STOPD"
+    },
+    {
+      "path": "训练机制与稳定性/2026-STOPD/experiments-DR",
+      "target": "/usr/data/STOPD-DR-Pilot"
+    },
+    {
+      "path": "训练机制与稳定性/2026-STOPD/experiments-DR-online",
+      "target": "/usr/data/STOPD-DR-Online"
+    },
+    {
+      "path": "训练机制与稳定性/2026-STOPD/experiments-upstream",
+      "target": "/usr/data/STOPD-Upstream-Reproduction"
+    },
+    {
+      "path": "训练机制与稳定性/arXiv2026-DN-MOPD/main",
+      "target": "/usr/data/DN-MOPD"
+    },
+    {
+      "path": "训练机制与稳定性/arXiv2026-PowerOPD/main",
+      "target": "/usr/data/PowerOPD"
+    },
+    {
+      "path": "训练机制与稳定性/arXiv2026-DuoOPD/main",
+      "target": "/usr/data/DuoOPD"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+Title: ReDraft, Don’t Just Distill: Reference-Driven Revision for Continual MLLM Post-Training
+Authors: Anonymous authors
+Status: ICLR 2027 Under Review (confirmed on PDF first page; not accepted)
+Forum: https://openreview.net/forum?id=Et89lO3Lc2
+PDF URL: https://openreview.net/pdf?id=Et89lO3Lc2
+Source: User-provided local PDF
+Original filename: 9629_ReDraft_Don_t_Just_Distil.pdf
+SHA256: b2526820316da0ed8a8ceec4a54ba0a4b915f1512cfb124dbe04bf279380ac00

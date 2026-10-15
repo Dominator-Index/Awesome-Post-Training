@@ -1,0 +1,4 @@
+Paper: https://arxiv.org/abs/2609.33711v1
+PDF: https://arxiv.org/pdf/2609.33711v1
+Code: https://github.com/YongYuanDeAo/DuoOPD
+SHA256: c85b89ee8f2c98105061e4db6fe36a612841f254aaddddf3b5bc07a4c06dfed5

@@ -1,0 +1,18 @@
+{
+  "generated_at_unix": 1791613856,
+  "total": 3,
+  "category_count": 1,
+  "categories": {
+    "训练机制与稳定性": 3
+  },
+  "paper_directory_count": 2,
+  "status_counts": {
+    "downloaded": 3
+  },
+  "valid_pdf_count": 3,
+  "missing_or_invalid_count": 0,
+  "pdfinfo_failures": 0,
+  "low_title_match_indices": [],
+  "temporary_files": [],
+  "total_bytes": 1950677
+}

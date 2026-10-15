@@ -1,0 +1,3 @@
+Your Teacher Can’t Help You Here: Combating Supervision Fidelity Decay in On-Policy Distillation
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/154216
+Preprint PDF: https://arxiv.org/pdf/2605.30833

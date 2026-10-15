@@ -1,0 +1,3 @@
+f-OPD: Stabilizing Long-Horizon On-Policy Distillation with Freshness-Aware Control
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/150017
+Preprint PDF: https://arxiv.org/pdf/2605.17862

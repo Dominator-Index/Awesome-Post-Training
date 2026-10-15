@@ -1,0 +1,9 @@
+Title: Data-Free On-Policy Distillation: How Far Can We Go Without External Data?
+arXiv: https://arxiv.org/abs/2609.14193
+PDF: https://arxiv.org/pdf/2609.14193v4
+Version: v4 (2026-10-07)
+User source: https://huggingface.co/papers/2609.14193
+Code: https://github.com/Ryuki661/DF-OPD
+Code commit: 9c3ac3a3e56fc72d09d47ef639d4a7d113a6176d
+Status: arXiv preprint; conference status not verified
+SHA256: a0f9f36f26aab0c68d4d932d5fb10cb2c8006cd737f128641d8473f642c61121

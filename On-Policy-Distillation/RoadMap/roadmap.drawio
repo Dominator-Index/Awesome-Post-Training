@@ -1,0 +1,1101 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="drawio" version="30.3.14">
+  <diagram name="01｜五种基线" id="page0">
+    <mxGraphModel dx="1720" dy="1180" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1180" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page0-2" value="&lt;b&gt;SFT · PPO · GRPO · OPD · OPSD&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;先区分轨迹来自谁、监督来自谁，再比较 loss；箭头表示组件变换，不表示唯一训练顺序。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page0-3" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;SFT&lt;/b&gt;&lt;br&gt;参考文本 → 明确目标&lt;br&gt;&lt;br&gt;$$\mathcal L_{\mathrm{SFT}}=-\sum_t\log\pi_\theta(y_t^*\mid x,y_{&amp;lt;t}^*)$$&lt;br&gt;&lt;br&gt;强项：稳定、适合冷启动&lt;br&gt;问题：参考前缀与推理前缀不同&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="190" width="510" height="290" />
+        </mxCell>
+        <mxCell id="page0-4" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;PPO&lt;/b&gt;&lt;br&gt;学生尝试 → reward + critic&lt;br&gt;&lt;br&gt;$$\widehat A_t=\sum_{l\ge0}(\gamma\lambda)^l\delta_{t+l}$$&lt;br&gt;&lt;br&gt;强项：任务收益、可 bootstrap&lt;br&gt;问题：critic 偏差与探索成本&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="600" y="190" width="510" height="290" />
+        </mxCell>
+        <mxCell id="page0-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;GRPO&lt;/b&gt;&lt;br&gt;同题多条回答互相比较&lt;br&gt;&lt;br&gt;$$\widehat A_i=\frac{R_i-\bar R}{\sigma_R+\epsilon}$$&lt;br&gt;&lt;br&gt;强项：省 learned critic&lt;br&gt;问题：全同奖励为零、信用粗&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1160" y="190" width="510" height="290" />
+        </mxCell>
+        <mxCell id="page0-6" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;OPD&lt;/b&gt;&lt;br&gt;学生前缀 → teacher 分布&lt;br&gt;&lt;br&gt;$$\mathcal L_{\mathrm{OPD}}=\mathbb E_{y\sim\pi_\theta}\sum_t D(p_t,q_t)$$&lt;br&gt;&lt;br&gt;强项：局部反馈密集&lt;br&gt;问题：teacher 偏好未必有益&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="550" width="510" height="290" />
+        </mxCell>
+        <mxCell id="page0-7" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;OPSD&lt;/b&gt;&lt;br&gt;同模型 + 额外信息作 teacher&lt;br&gt;&lt;br&gt;$$q_t=\pi_{\bar\theta}(\cdot\mid x,z,y_{&amp;lt;t})$$&lt;br&gt;&lt;br&gt;强项：利用自身信息优势&lt;br&gt;问题：z 缺失、风格和探索错配&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="600" y="550" width="510" height="290" />
+        </mxCell>
+        <mxCell id="page0-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=1;exitY=0.1;entryX=0;entryY=0.1;" edge="1" parent="1" source="page0-4" target="page0-5">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page0-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=1;exitY=0.1;entryX=0;entryY=0.1;" edge="1" parent="1" source="page0-6" target="page0-7">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page0-10" value="PPO → GRPO：将 value baseline 换成同题组统计" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="600" y="495" width="1070" height="40" />
+        </mxCell>
+        <mxCell id="page0-11" value="OPD → OPSD：让同模型 teacher 获得额外参考信息" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="880" width="1070" height="55" />
+        </mxCell>
+        <mxCell id="page0-12" value="&lt;b&gt;一个共同框架&lt;/b&gt;&lt;br&gt;题目 → 采样状态 → 构造信号 → 权重 / 归一化 → 更新&lt;br&gt;&lt;br&gt;改动可以很小，但“目标变了”与“只换估计器”必须区分。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=22;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1160" y="550" width="510" height="290" />
+        </mxCell>
+        <mxCell id="page0-13" value="数据 / 轨迹" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1000" width="310" height="50" />
+        </mxCell>
+        <mxCell id="page0-14" value="teacher / 接口" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="370" y="1000" width="310" height="50" />
+        </mxCell>
+        <mxCell id="page0-15" value="监督信号 / 估计" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="700" y="1000" width="310" height="50" />
+        </mxCell>
+        <mxCell id="page0-16" value="权重 / 归一化" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1030" y="1000" width="310" height="50" />
+        </mxCell>
+        <mxCell id="page0-17" value="更新 / 长度" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1360" y="1000" width="310" height="50" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="02｜十个组件" id="page1">
+    <mxGraphModel dx="1720" dy="1180" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1180" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page1-2" value="&lt;b&gt;训练循环的十个可修改位置&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;每篇论文可以同时修改多个位置；长度 L 横跨采样 H、信号 A、权重 W 和归一化 N。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page1-3" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;D｜题目与训练数据&lt;/b&gt;&lt;br&gt;&lt;br&gt;\(x\sim\mathcal D\)&lt;br&gt;题目 / 参考数据&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="410" width="210" height="190" />
+        </mxCell>
+        <mxCell id="page1-4" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;H｜rollout 与前缀分布&lt;/b&gt;&lt;br&gt;&lt;br&gt;\(y\sim\mu\)&lt;br&gt;rollout / prefix&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="280" y="410" width="210" height="190" />
+        </mxCell>
+        <mxCell id="page1-5" value="&lt;b&gt;I｜监督接口与动作单位&lt;/b&gt;&lt;br&gt;&lt;br&gt;token / 文本单位&lt;br&gt;监督对齐接口" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="520" y="410" width="210" height="190" />
+        </mxCell>
+        <mxCell id="page1-6" value="&lt;b&gt;F｜散度、估计器与梯度路径&lt;/b&gt;&lt;br&gt;&lt;br&gt;KL / MC / sg&lt;br&gt;loss 与梯度路径" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="760" y="410" width="210" height="190" />
+        </mxCell>
+        <mxCell id="page1-7" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;W｜token / trajectory 权重与门控&lt;/b&gt;&lt;br&gt;&lt;br&gt;\(m_t w_t\)&lt;br&gt;筛选 / 加权&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1000" y="410" width="210" height="190" />
+        </mxCell>
+        <mxCell id="page1-8" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;N｜advantage / loss 归一化&lt;/b&gt;&lt;br&gt;&lt;br&gt;\(\sigma, Z\)&lt;br&gt;尺度 / 聚合&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1240" y="410" width="210" height="190" />
+        </mxCell>
+        <mxCell id="page1-9" value="&lt;b&gt;C｜约束、更新幅度与训练调度&lt;/b&gt;&lt;br&gt;&lt;br&gt;clip / anchor&lt;br&gt;控制更新" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1480" y="410" width="210" height="190" />
+        </mxCell>
+        <mxCell id="page1-10" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=1;exitY=0.1;entryX=0;entryY=0.1;" edge="1" parent="1" source="page1-3" target="page1-4">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page1-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=1;exitY=0.1;entryX=0;entryY=0.1;" edge="1" parent="1" source="page1-4" target="page1-5">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page1-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=1;exitY=0.1;entryX=0;entryY=0.1;" edge="1" parent="1" source="page1-5" target="page1-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page1-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=1;exitY=0.1;entryX=0;entryY=0.1;" edge="1" parent="1" source="page1-6" target="page1-7">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page1-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=1;exitY=0.1;entryX=0;entryY=0.1;" edge="1" parent="1" source="page1-7" target="page1-8">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page1-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=1;exitY=0.1;entryX=0;entryY=0.1;" edge="1" parent="1" source="page1-8" target="page1-9">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page1-16" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;T｜teacher 与信息&lt;/b&gt;&lt;br&gt;外部模型 / 自教师 / reference&lt;br&gt;crop / feedback / harness&lt;br&gt;&lt;b&gt;\(q(\cdot\mid h,z)\)&lt;/b&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="760" y="180" width="340" height="170" />
+        </mxCell>
+        <mxCell id="page1-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="page1-16" target="page1-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page1-18" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;A｜reward · baseline · critic&lt;/b&gt;&lt;br&gt;\(R\) / log-ratio / \(Q-V\) / return&lt;br&gt;vOPD、AOPD、RLCSD、AC2&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="760" y="700" width="420" height="180" />
+        </mxCell>
+        <mxCell id="page1-19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="page1-18" target="page1-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page1-20" value="&lt;b&gt;L｜长度与预算&lt;/b&gt;&lt;br&gt;生成多少？监督到哪里？&lt;br&gt;按 token 还是序列平均？&lt;br&gt;完整 / chunk / random stop" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="280" y="700" width="400" height="180" />
+        </mxCell>
+        <mxCell id="page1-21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="page1-4" target="page1-20">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page1-22" value="示例：DF-OPD 改 D；CorrGRPO 改 N；AC2 改 H/A/L；STOPD 改 H/W/N/L；TOP-D 改 T/F/A/N/C/L。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="940" width="1640" height="70" />
+        </mxCell>
+        <mxCell id="page1-23" value="数据 / 轨迹" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1060" width="310" height="50" />
+        </mxCell>
+        <mxCell id="page1-24" value="teacher / 接口" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="370" y="1060" width="310" height="50" />
+        </mxCell>
+        <mxCell id="page1-25" value="监督信号 / 估计" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="700" y="1060" width="310" height="50" />
+        </mxCell>
+        <mxCell id="page1-26" value="权重 / 归一化" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1030" y="1060" width="310" height="50" />
+        </mxCell>
+        <mxCell id="page1-27" value="更新 / 长度" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1360" y="1060" width="310" height="50" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="03｜论文组件地图" id="page2">
+    <mxGraphModel dx="1720" dy="2220" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="2220" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page2-2" value="&lt;b&gt;论文在哪里动手：按组件查，而非按新名字记&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;每张卡是一个可继续展开的组件分支；一篇论文可出现多次。细节与关键公式见认知卡片 / 离线浏览器。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page2-3" value="&lt;b&gt;D｜题目与训练数据&lt;/b&gt;&lt;br&gt;&lt;br&gt;SEAD · ReDraft&lt;br&gt;DF-OPD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="180" width="800" height="310" />
+        </mxCell>
+        <mxCell id="page2-4" value="&lt;b&gt;H｜rollout 与前缀分布&lt;/b&gt;&lt;br&gt;&lt;br&gt;f-OPD · AsyncOPD&lt;br&gt;Noisy Expert / NAIL · TrOPD&lt;br&gt;D-OPSD / Few-step Image Diffusion · ReDraft&lt;br&gt;Draft-OPD · AC2&lt;br&gt;STOPD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="180" width="800" height="310" />
+        </mxCell>
+        <mxCell id="page2-5" value="&lt;b&gt;T｜teacher 来源与额外信息&lt;/b&gt;&lt;br&gt;&lt;br&gt;Many Faces of OPD · TOP-D&lt;br&gt;LGR / Supervision Fidelity Decay · CoPD / Co-Evolving Policy Distillation&lt;br&gt;VPD / Variational Policy Distillation · Rethinking OPSD&lt;br&gt;OPHSD / Harness Self-Distillation · d-OPSD / Self Future dLLMs&lt;br&gt;PRISM / Black-box Multimodal RL · VC-OPD&lt;br&gt;Vision-OPD · VA-OPD / Visual Advantage&lt;br&gt;GUI-SD · D-OPSD / Few-step Image Diffusion&lt;br&gt;OPSD / Self-Distilled Reasoner · PIVOT&lt;br&gt;RLCSD · DuoOPD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="530" width="800" height="310" />
+        </mxCell>
+        <mxCell id="page2-6" value="&lt;b&gt;I｜监督接口与动作单位&lt;/b&gt;&lt;br&gt;&lt;br&gt;SimCT · d-OPSD / Self Future dLLMs&lt;br&gt;GUI-SD · D-OPSD / Few-step Image Diffusion&lt;br&gt;Draft-OPD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="530" width="800" height="310" />
+        </mxCell>
+        <mxCell id="page2-7" value="&lt;b&gt;F｜散度、估计器与梯度路径&lt;/b&gt;&lt;br&gt;&lt;br&gt;AsyncOPD · Noisy Expert / NAIL&lt;br&gt;vOPD / KL Control Variate · REOPOLD / Relaxed OPD&lt;br&gt;SEAD · Many Faces of OPD&lt;br&gt;TOP-D · TrOPD&lt;br&gt;PRISM / Black-box Multimodal RL · ReDraft&lt;br&gt;Draft-OPD · AOPD&lt;br&gt;PowerOPD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="880" width="800" height="310" />
+        </mxCell>
+        <mxCell id="page2-8" value="&lt;b&gt;A｜奖励、return、baseline 与 critic&lt;/b&gt;&lt;br&gt;&lt;br&gt;vOPD / KL Control Variate · TOP-D&lt;br&gt;LGR / Supervision Fidelity Decay · VPD / Variational Policy Distillation&lt;br&gt;RWOPD / NL-to-SVA · PIVOT&lt;br&gt;Dr.OPD · RLCSD&lt;br&gt;AOPD · AC2&lt;br&gt;PowerOPD · DuoOPD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="880" width="800" height="310" />
+        </mxCell>
+        <mxCell id="page2-9" value="&lt;b&gt;W｜token / trajectory 权重与门控&lt;/b&gt;&lt;br&gt;&lt;br&gt;f-OPD · Rock Tokens&lt;br&gt;REOPOLD / Relaxed OPD · SEAD&lt;br&gt;PW-OPSD / Teacher Token Reliability · LGR / Supervision Fidelity Decay&lt;br&gt;TrOPD · Rethinking OPSD&lt;br&gt;RWOPD / NL-to-SVA · VC-OPD&lt;br&gt;VA-OPD / Visual Advantage · GUI-SD&lt;br&gt;PIVOT · Dr.OPD&lt;br&gt;RLCSD · Draft-OPD&lt;br&gt;AOPD · STOPD&lt;br&gt;DN-MOPD · DIAL-OPD&lt;br&gt;PowerOPD · DuoOPD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1230" width="800" height="310" />
+        </mxCell>
+        <mxCell id="page2-10" value="&lt;b&gt;N｜advantage / loss 归一化&lt;/b&gt;&lt;br&gt;&lt;br&gt;REOPOLD / Relaxed OPD · TOP-D&lt;br&gt;VC-OPD · VA-OPD / Visual Advantage&lt;br&gt;CorrGRPO · AOPD&lt;br&gt;AC2 · STOPD&lt;br&gt;DN-MOPD · DIAL-OPD&lt;br&gt;DuoOPD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="1230" width="800" height="310" />
+        </mxCell>
+        <mxCell id="page2-11" value="&lt;b&gt;C｜约束、更新幅度与训练调度&lt;/b&gt;&lt;br&gt;&lt;br&gt;f-OPD · AsyncOPD&lt;br&gt;EffOPD / Learning to Foresee · REOPOLD / Relaxed OPD&lt;br&gt;SEAD · Many Faces of OPD&lt;br&gt;TOP-D · TrOPD&lt;br&gt;CoPD / Co-Evolving Policy Distillation · VPD / Variational Policy Distillation&lt;br&gt;PRISM / Black-box Multimodal RL · Dr.OPD&lt;br&gt;AC2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1580" width="800" height="310" />
+        </mxCell>
+        <mxCell id="page2-12" value="&lt;b&gt;L｜token length、截断与预算&lt;/b&gt;&lt;br&gt;&lt;br&gt;TOP-D · PW-OPSD / Teacher Token Reliability&lt;br&gt;LGR / Supervision Fidelity Decay · Rethinking OPSD&lt;br&gt;Draft-OPD · AC2&lt;br&gt;STOPD · DIAL-OPD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=18;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="1580" width="800" height="310" />
+        </mxCell>
+        <mxCell id="page2-13" value="&lt;b&gt;正文待核对（只保留题名指向）&lt;/b&gt;&lt;br&gt;Better Rollouts · CoTrek · Fewer Tokens / Fewer Layers · Early Risk Hindsight&lt;br&gt;REOPOLD 依据同方法 arXiv 版本，原 OpenReview 版细节未逐字核对。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1960" width="1640" height="150" />
+        </mxCell>
+        <mxCell id="page2-14" value="数据 / 轨迹" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="2140" width="310" height="50" />
+        </mxCell>
+        <mxCell id="page2-15" value="teacher / 接口" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="370" y="2140" width="310" height="50" />
+        </mxCell>
+        <mxCell id="page2-16" value="监督信号 / 估计" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="700" y="2140" width="310" height="50" />
+        </mxCell>
+        <mxCell id="page2-17" value="权重 / 归一化" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1030" y="2140" width="310" height="50" />
+        </mxCell>
+        <mxCell id="page2-18" value="更新 / 长度" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1360" y="2140" width="310" height="50" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="04｜长度的不同位置" id="page3">
+    <mxGraphModel dx="1720" dy="1490" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1490" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page3-2" value="&lt;b&gt;不要把所有 token length 改动混为一谈&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;生成截断、loss mask、长度分母、未来 return 和位置权重，作用位置不同。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page3-3" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;GRPO outcome&lt;/b&gt;&lt;br&gt;每条序列所有 token 共用 \(\widehat A_i\)；通常需要完整终局结果&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="180" width="530" height="160" />
+        </mxCell>
+        <mxCell id="page3-4" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="620" y="200" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-5" value="prefix" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="750" y="200" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-6" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="200" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-7" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1010" y="200" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-8" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1140" y="200" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-9" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1270" y="200" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-10" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1400" y="200" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-11" value="R" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1530" y="200" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-12" value="完整回答 → terminal reward" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=19;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="620" y="285" width="1010" height="50" />
+        </mxCell>
+        <mxCell id="page3-13" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;AC2 chunk&lt;/b&gt;&lt;br&gt;ready 时不生成后半段；用 \(V(sc_i)\) 构造组内优势&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="380" width="530" height="160" />
+        </mxCell>
+        <mxCell id="page3-14" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="620" y="400" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-15" value="prefix" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="750" y="400" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-16" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="400" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-17" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1010" y="400" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-18" value="V" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1140" y="400" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-19" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;dashed=1;fillColor=#ffffff;strokeColor=#a6b3b7;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1270" y="400" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-20" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;dashed=1;fillColor=#ffffff;strokeColor=#a6b3b7;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1400" y="400" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-21" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;dashed=1;fillColor=#ffffff;strokeColor=#a6b3b7;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1530" y="400" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-22" value="replay prefix → 新 chunk → critic V" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=19;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="620" y="485" width="1010" height="50" />
+        </mxCell>
+        <mxCell id="page3-23" value="&lt;b&gt;STOPD block&lt;/b&gt;&lt;br&gt;不预测未生成未来；IPW 补偿后段 token 的覆盖差异" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="580" width="530" height="160" />
+        </mxCell>
+        <mxCell id="page3-24" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="620" y="600" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-25" value="prefix" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="750" y="600" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-26" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="600" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-27" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1010" y="600" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-28" value="STOP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1140" y="600" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-29" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;dashed=1;fillColor=#ffffff;strokeColor=#a6b3b7;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1270" y="600" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-30" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;dashed=1;fillColor=#ffffff;strokeColor=#a6b3b7;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1400" y="600" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-31" value="token" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;dashed=1;fillColor=#ffffff;strokeColor=#a6b3b7;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1530" y="600" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-32" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;随机停止 → 局部 teacher → \(1/p_t\)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=19;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="620" y="685" width="1010" height="50" />
+        </mxCell>
+        <mxCell id="page3-33" value="&lt;b&gt;Draft-OPD block&lt;/b&gt;&lt;br&gt;block 用于投机验证与接受长度；不是 value chunk" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="780" width="530" height="160" />
+        </mxCell>
+        <mxCell id="page3-34" value="✓ / ×" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="620" y="800" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-35" value="prefix" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="750" y="800" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-36" value="✓ / ×" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="800" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-37" value="✓ / ×" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1010" y="800" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-38" value="✓ / ×" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1140" y="800" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-39" value="✓ / ×" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1270" y="800" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-40" value="✓ / ×" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1400" y="800" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-41" value="✓ / ×" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="1530" y="800" width="110" height="70" />
+        </mxCell>
+        <mxCell id="page3-42" value="draft 提议 → target 验证 → anchor replay" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=19;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="620" y="885" width="1010" height="50" />
+        </mxCell>
+        <mxCell id="page3-43" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;loss 长度聚合：三种不同权重&lt;/b&gt;&lt;br&gt;序列平均：\(\frac{1}{B}\sum_i\frac{1}{T_i}\sum_t\ell_{it}\)&lt;br&gt;token 平均：\(\frac{\sum_{i,t}\ell_{it}}{\sum_i T_i}\)&lt;br&gt;固定分母：\(\frac{\sum_{i,t}\ell_{it}}{BL}\)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1010" width="760" height="380" />
+        </mxCell>
+        <mxCell id="page3-44" value="&lt;b&gt;还要分开记录&lt;/b&gt;&lt;br&gt;训练预算 ≠ 测试预算；已生成后 mask ≠ 提前停止&lt;br&gt;TOP-D：即时信号 + 平均未来 return&lt;br&gt;PW-OPSD：相对位置权重；VLM：输入 vision token 数" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=22;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="850" y="1010" width="820" height="380" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="05｜AC2与STOPD" id="page4">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page4-2" value="&lt;b&gt;都能少做完整 rollout，但学习信号来自不同地方&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;AC2 用 learned critic 估计未生成未来；STOPD 对已定义的局部监督做随机抽样与 IPW 补偿。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page4-3" value="&lt;b&gt;AC2 · 恢复同一个 replay prefix s&lt;/b&gt;&lt;br&gt;&lt;br&gt;复用起点，之后的新 chunk 由当前 actor 生成" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="190" width="760" height="240" />
+        </mxCell>
+        <mxCell id="page4-4" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;STOPD · 生成前随机抽停止 block&lt;/b&gt;&lt;br&gt;&lt;br&gt;\(A\sim\operatorname{Unif}\{0,\ldots,L-1\}\)&lt;br&gt;停止点与轨迹独立&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="920" y="190" width="760" height="240" />
+        </mxCell>
+        <mxCell id="page4-5" value="&lt;b&gt;AC2 · 分叉生成多个新 chunk cᵢ&lt;/b&gt;&lt;br&gt;&lt;br&gt;不是从历史轨迹随意截几段直接拟合" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="470" width="760" height="240" />
+        </mxCell>
+        <mxCell id="page4-6" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;STOPD · 仅生成到 stop 或自然 EOS&lt;/b&gt;&lt;br&gt;&lt;br&gt;实际生成 \(M=\min(T,S)\)&lt;br&gt;teacher 对保留前缀提供局部反馈&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="920" y="470" width="760" height="240" />
+        </mxCell>
+        <mxCell id="page4-7" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;AC2 · 检查 critic 是否 ready&lt;/b&gt;&lt;br&gt;&lt;br&gt;未 ready / audit → 完整终局 \(R_i\)&lt;br&gt;ready 且截断 → \(V(sc_i)\)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="750" width="760" height="240" />
+        </mxCell>
+        <mxCell id="page4-8" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;STOPD · 按保留概率的倒数加权&lt;/b&gt;&lt;br&gt;&lt;br&gt;\(p_t=\frac{L-K\lfloor(t-1)/K\rfloor}{L}\)&lt;br&gt;晚位置少保留，但权重 \(1/p_t\) 更大&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="920" y="750" width="760" height="240" />
+        </mxCell>
+        <mxCell id="page4-9" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;AC2 · 构造 chunk advantage，再 PPO 更新&lt;/b&gt;&lt;br&gt;&lt;br&gt;\(\widehat A_i=v_i-\frac1G\sum_j v_j\)&lt;br&gt;主实验不除 σ；chunk 内共享 credit&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1030" width="760" height="240" />
+        </mxCell>
+        <mxCell id="page4-10" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;STOPD · 以 lagged token count 归一化&lt;/b&gt;&lt;br&gt;&lt;br&gt;\(\mathbb E_S[\widehat G]=G,\quad\mathbb E_S[\widehat g]=\frac NC g^{\mathrm v}\)&lt;br&gt;梯度和无偏，归一化仍有尺度差异&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="920" y="1030" width="760" height="240" />
+        </mxCell>
+        <mxCell id="page4-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="page4-3" target="page4-5">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page4-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="page4-5" target="page4-7">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page4-13" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="page4-7" target="page4-9">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page4-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="page4-4" target="page4-6">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page4-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="page4-6" target="page4-8">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page4-16" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#536a72;fontSize=16;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="page4-8" target="page4-10">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="page4-17" value="&lt;b&gt;重要条件&lt;/b&gt;&lt;br&gt;AC2：critic 要校验，仍保留真实评分通路。&lt;br&gt;STOPD：局部 loss 不能依赖被删掉的未来；IPW 不能直接恢复需要终局 reward 的 GRPO。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=22;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1350" width="1640" height="150" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="06｜论文公式 1–4" id="page5">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page5-2" value="&lt;b&gt;一眼抓住方法：认知 → 改动位置 → 关键公式&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;所有公式均为 draw.io 原生 LaTeX / MathJax 标签；结构示意与原文公式分别标注。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page5-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page5-4" value="&lt;b&gt;f-OPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;旧 rollout 可以复用，但应按新鲜程度决定它还值得信任多少。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;根据策略漂移、teacher 上下文漂移和更新滞后降低旧样本权重，并加入 rollout 锚定及缓冲区刷新。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page5-3">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page5-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}f_i=\frac{\exp[-\alpha\sqrt{D_i^{\rm roll}}-\beta\sqrt{D_i^{\rm sup}}]}{1+\tau_i}\\ w_i=[f_i-\xi]_+\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page5-3">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page5-6" value="&lt;b&gt;改动：&lt;/b&gt;H · W · C&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文核心式&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;新鲜度是偏差代理，不是精确因果可靠性。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page5-3">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page5-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page5-8" value="&lt;b&gt;AsyncOPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;异步训练能提高吞吐，但 loss 方向和打分缓存决定旧数据是否还能用。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;比较 FKL/RKL 的陈旧性，在 learner 端重算当前 student 信号，并用多样本 MC 降低单采样方差。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page5-7">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page5-9" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\widehat g_M=\frac1M\sum_{m=1}^M g(a_m;\pi_\theta,T),\quad a_m\sim\mu$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page5-7">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page5-10" value="&lt;b&gt;改动：&lt;/b&gt;H · F · C&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;μ 是真实提议分布；需要论文对应的重要性校正，不能简单重采样就宣称无偏。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page5-7">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page5-11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page5-12" value="&lt;b&gt;Noisy Expert / NAIL&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;当专家带噪声时，学生访问自己的状态再问专家，可能比离线模仿更有样本效率。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;建立 noisy-expert 模型，推导离线与在线 imitation 的复杂度分离，并提出鲁棒在线 NAIL 变体。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page5-11">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page5-13" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\pi_\eta^*=(1-\eta)\pi^*+\eta\nu$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page5-11">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page5-14" value="&lt;b&gt;改动：&lt;/b&gt;H · F&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文设置式&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;多项式或 horizon-free 结论有噪声与 domination 条件；不是所有 SFT 都指数困难。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page5-11">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page5-15" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page5-16" value="&lt;b&gt;Rock Tokens&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;高 loss 不一定意味着值得学；持续难以纠正的风格残差可能消耗大量梯度。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;识别持续高 loss token 及关联窗口，降低其权重；Rock-Freeze 将这些区域权重设为零。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page5-15">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page5-17" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$w_t=\begin{cases}0,&amp;amp;y_t\in\mathcal R\ \text{or}\ t\in\mathcal W_R\\1,&amp;amp;\text{otherwise}\end{cases}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page5-15">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page5-18" value="&lt;b&gt;改动：&lt;/b&gt;W&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文特例&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;需要持续性与干预诊断；不能把所有高 loss token 都删掉。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page5-15">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="07｜论文公式 5–8" id="page6">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page6-2" value="&lt;b&gt;一眼抓住方法：认知 → 改动位置 → 关键公式&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;所有公式均为 draw.io 原生 LaTeX / MathJax 标签；结构示意与原文公式分别标注。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page6-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page6-4" value="&lt;b&gt;vOPD / KL Control Variate&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;用一个与当前动作无关的 baseline，可让 OPD 梯度更稳定而保持其期望。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;以负 reverse KL 作为局部 log-ratio 奖励的期望 baseline，detach 后从单采样信号中减去。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page6-3">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page6-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$a_t=\log\frac{T(y_t|h_t)}{S(y_t|h_t)}+D_{\rm KL}(S\|T)$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page6-3">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page6-6" value="&lt;b&gt;改动：&lt;/b&gt;A · F&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文核心式&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;这是局部蒸馏奖励 baseline，不能替代任务终局价值；降方差有分析条件。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page6-3">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page6-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page6-8" value="&lt;b&gt;EffOPD / Learning to Foresee&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;如果早期更新方向已经接近最终方向，可以沿当前方向多走一点来加速。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;分析模块分配与低秩更新方向，采用自适应 extrapolation 步长。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page6-7">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page6-9" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\theta_{k+1}=\theta_k+\alpha_k\Delta\theta_k$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page6-7">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page6-10" value="&lt;b&gt;改动：&lt;/b&gt;C&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;外推倍数必须控制；稳定方向的经验现象不是全局收敛保证。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page6-7">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page6-11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page6-12" value="&lt;b&gt;Better Rollouts&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;关注点是收集什么 rollout，而不只是在已有 rollout 上换 loss。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;本地尚无 PDF，具体采样机制待核对。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page6-11">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page6-13" value="关键公式待正文核对" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page6-11">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page6-14" value="&lt;b&gt;改动：&lt;/b&gt;H&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;待核对&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;不根据题名补写具体算法。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page6-11">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page6-15" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page6-16" value="&lt;b&gt;REOPOLD / Relaxed OPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;强烈负监督应适度，低信息 token 不必占据同样的学习预算。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;限制负 log-ratio 尾部，先按奖励门控、后按学生 entropy 选 token，分阶段探索与精炼。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page6-15">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page6-17" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\widehat r_t=\max\left(\operatorname{sg}(r_t),\frac{\log\lambda}{1-\lambda}\right)$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page6-15">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page6-18" value="&lt;b&gt;改动：&lt;/b&gt;F · W · C · N&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;arXiv 相关版本原文式&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;依据 arXiv:2603.11137；与原列表及 workshop 版本的逐字对应尚未核实。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page6-15">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="08｜论文公式 9–12" id="page7">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page7-2" value="&lt;b&gt;一眼抓住方法：认知 → 改动位置 → 关键公式&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;所有公式均为 draw.io 原生 LaTeX / MathJax 标签；结构示意与原文公式分别标注。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page7-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page7-4" value="&lt;b&gt;SEAD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;监督要匹配学生当前能力：太难的前缀和已掌握的 token 都可能浪费训练。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;联合 teacher/student entropy 分区选择 loss 或跳过，随阶段从 FKL 过渡到 RKL，配合由易到难课程。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page7-3">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page7-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\ell_{t,k}=m_{t,k}\big[\alpha_k D_{\rm FKL}+(1-\alpha_k)D_{\rm RKL}\big]$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page7-3">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page7-6" value="&lt;b&gt;改动：&lt;/b&gt;D · F · W · C&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;该式抽象三项组件；实际分区和调度以原文为准，不能只独立套其中一项。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page7-3">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page7-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page7-8" value="&lt;b&gt;SimCT&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;两模型 tokenizer 不同时，先找到可比较的文本单位，比直接比较 token id 更重要。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;除共享 token 外，纳入双方都能表达的短 multi-token continuations，扩展监督接口。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page7-7">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page7-9" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\mathcal U=\mathcal V_{\rm shared}\cup\mathcal C_{\rm jointly\ tokenizable}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page7-7">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page7-10" value="&lt;b&gt;改动：&lt;/b&gt;I&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;扩大接口不等于强行对齐不同 token id；序列概率需按各自 tokenizer 计算。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page7-7">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page7-11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page7-12" value="&lt;b&gt;Many Faces of OPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;teacher 强不够，还要检查前缀兼容性、TopK 梯度与特权信息是否能迁移。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;诊断三类失败，比较 stop-gradient TopK、RLVR teacher 与 SFT 稳定化。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page7-11">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page7-13" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$g=\sum_{a\in\mathcal K}\operatorname{sg}\!\left[S(a)\log\frac{T(a)}{S(a)}\right]\nabla\log S(a)$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page7-11">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page7-14" value="&lt;b&gt;改动：&lt;/b&gt;T · F · C&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;TopK surrogate 与完整 KL 不能无条件等同；这是诊断加稳定化研究。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page7-11">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page7-15" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page7-16" value="&lt;b&gt;TOP-D&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;teacher 太远时先构造较近的目标，再用受控更新逐步接近它。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;teacher/student 概率插值，使用平滑 log-ratio、长度归一化未来 return、token 组标准化与 PPO 式内部迭代。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page7-15">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page7-17" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}T_\alpha=\alpha T+(1-\alpha)S\\\widetilde r_t=\log\left(\alpha\frac{T(y_t)}{S(y_t)}+1-\alpha\right)\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page7-15">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page7-18" value="&lt;b&gt;改动：&lt;/b&gt;T · F · A · N · C · L&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文核心式&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;不只做插值；概率空间插值与 log 概率缩放不同。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page7-15">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="09｜论文公式 13–16" id="page8">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page8-2" value="&lt;b&gt;一眼抓住方法：认知 → 改动位置 → 关键公式&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;所有公式均为 draw.io 原生 LaTeX / MathJax 标签；结构示意与原文公式分别标注。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page8-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page8-4" value="&lt;b&gt;PW-OPSD / Teacher Token Reliability&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;高 entropy 既可能是坏分支，也可能是多种好解法；可靠性不能只看 entropy。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;先做分支可行性诊断，再在训练中按相对位置给递增权重，弱化早期监督。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page8-3">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page8-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$L=\frac{\sum_t w(t/|y|)\ell_t}{\sum_t w(t/|y|)},\quad w\ \text{随位置递增}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page8-3">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page8-6" value="&lt;b&gt;改动：&lt;/b&gt;W · L&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;位置是结构代理；训练不需要逐次做 branch intervention，非精确可靠性标签。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page8-3">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page8-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page8-8" value="&lt;b&gt;LGR / Supervision Fidelity Decay&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;学生前缀越长，teacher 的纠正能力可能越弱，不能默认后段监督始终有效。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;对候选 token 看一步后 teacher confidence，构造组相对奖励，并用 entropy-triggered tree attention 控制开销。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page8-7">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page8-9" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$r_t(a)\propto\operatorname{Conf}_T(h_ta)$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page8-7">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page8-10" value="&lt;b&gt;改动：&lt;/b&gt;T · A · W · L&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;下一步置信度是监督强度代理，不等于最终答对概率。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page8-7">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page8-11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page8-12" value="&lt;b&gt;TrOPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;teacher/student 分歧很大时，先判断哪些局部监督值得信任。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;按解码一致性选择可靠区域，outlier 区用 clipping、mask 或 FKL，并加入 teacher-prefix guidance。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page8-11">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page8-13" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$L=m_t\ell_{\rm trusted}+(1-m_t)\ell_{\rm outlier}+\lambda\ell_{\rm teacher-prefix}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page8-11">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page8-14" value="&lt;b&gt;改动：&lt;/b&gt;H · F · W · C&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;与 TOP-D 是两篇论文；这里 trust region 指监督可靠区域，不是同一个插值目标。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page8-11">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page8-15" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page8-16" value="&lt;b&gt;CoTrek&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;它属于长 CoT 的 OPD 扩展问题，具体加速机制需要正文确认。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;本地缺少 PDF，暂不补写算法。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page8-15">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page8-17" value="关键公式待正文核对" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page8-15">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page8-18" value="&lt;b&gt;改动：&lt;/b&gt;H · L&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;待核对&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;不能仅根据 scalable 推断一定是截断、压缩或异步。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page8-15">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="10｜论文公式 17–20" id="page9">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page9-2" value="&lt;b&gt;一眼抓住方法：认知 → 改动位置 → 关键公式&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;所有公式均为 draw.io 原生 LaTeX / MathJax 标签；结构示意与原文公式分别标注。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page9-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page9-4" value="&lt;b&gt;CoPD / Co-Evolving Policy Distillation&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;专家还在训练时就互相教，可能比专家完全分化后再合并更容易吸收。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;并行 RLVR 训练领域专家，同时进行双向 OPD，使能力与行为模式共同演化。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page9-3">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page9-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\{T_j^{(k+1)}\}_j\leftarrow\text{RLVR}+\text{mutual OPD}(\{T_j^{(k)}\}_j)$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page9-3">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page9-6" value="&lt;b&gt;改动：&lt;/b&gt;T · C&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;是训练结构改变，不能归为只修改某个 token 权重。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page9-3">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page9-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page9-8" value="&lt;b&gt;VPD / Variational Policy Distillation&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;会阅读反馈的 teacher 也需要继续进步，固定的反馈解释能力可能成为瓶颈。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;用变分 EM：E-step 根据结果与语言反馈更新 teacher，M-step 蒸馏给 student。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page9-7">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page9-9" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}T_{k+1}\leftarrow\operatorname{E-step}(R,\text{feedback})\\ S_{k+1}\leftarrow\operatorname{M-step}(T_{k+1})\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page9-7">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page9-10" value="&lt;b&gt;改动：&lt;/b&gt;T · C · A&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;不是单纯把反馈字符串加进固定 teacher prompt。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page9-7">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page9-11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page9-12" value="&lt;b&gt;Rethinking OPSD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;teacher 看答案后不再需要探索，但 student 仍需要；这种偏好未必适合长思考。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;改变特权信息和生成预算，分析 fork suppression、纠错与分支行为。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page9-11">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page9-13" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\Delta_t=\log T(y_t|h_t,z)-\log S(y_t|h_t)$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page9-11">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page9-14" value="&lt;b&gt;改动：&lt;/b&gt;T · W · L&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文诊断量&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;诊断论文，没有一个已经验证的通用修复算法。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page9-11">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page9-15" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page9-16" value="&lt;b&gt;OPHSD / Harness Self-Distillation&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;额外推理流程可以只在训练中当脚手架，再把它的帮助内化到模型里。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;用当前模型加 draft–verify、plan–solve harness 构造 teacher，再在学生轨迹上蒸馏。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page9-15">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page9-17" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}T=\operatorname{Harness}(S)\\ L=\mathbb E_{h\sim d_S}D(T_h\|S_h)\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page9-15">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page9-18" value="&lt;b&gt;改动：&lt;/b&gt;T&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;部署时能否移除 harness 取决于任务与实际内化效果。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page9-15">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="11｜论文公式 21–24" id="page10">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page10-2" value="&lt;b&gt;一眼抓住方法：认知 → 改动位置 → 关键公式&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;所有公式均为 draw.io 原生 LaTeX / MathJax 标签；结构示意与原文公式分别标注。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page10-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page10-4" value="&lt;b&gt;RWOPD / NL-to-SVA&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;语法像标准答案还不够，应让真正性质等价的 SVA 决定哪些监督值得用。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;用 SymbiYosys+Z3 的性质等价检查器筛选学生 rollout，再做奖励加权 FKL。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page10-3">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page10-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$L=\mathbb E_{y\sim S}\left[w_{\rm PEC}(y)\sum_tD_{\rm KL}(T_t\|S_t)\right]$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page10-3">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page10-6" value="&lt;b&gt;改动：&lt;/b&gt;A · W&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;奖励权重与验证器可用性相关；这是 rollout 加权，不等于 AOPD 动作 advantage。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page10-3">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page10-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page10-8" value="&lt;b&gt;d-OPSD / Self Future dLLMs&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;扩散语言模型的监督单位应跟去噪步骤对齐，而不是硬套自回归前缀。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;以自生成答案作 suffix 条件构造 self-teacher，在学生去噪轨迹上做 step-level distillation。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page10-7">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page10-9" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$L=\mathbb E_{s_k\sim S}\sum_kD\big(T(\cdot|s_k,\text{suffix}),S(\cdot|s_k)\big)$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page10-7">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page10-10" value="&lt;b&gt;改动：&lt;/b&gt;T · I&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;这里的 step 不是左到右的 token 位置；与图像 D-OPSD 不同。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page10-7">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page10-11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page10-12" value="&lt;b&gt;PRISM / Black-box Multimodal RL&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;拿不到 teacher logits 时，也可以先对齐响应分布再做 RL。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;在 SFT 与 RLVR 之间插入 response-level adversarial alignment，用感知/推理 MoE discriminator 提供信号。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page10-11">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page10-13" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\text{SFT}\ \rightarrow\ \text{adversarial pre-alignment}\ \rightarrow\ \text{RLVR}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page10-11">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page10-14" value="&lt;b&gt;改动：&lt;/b&gt;T · F · C&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文流程式&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;属于黑盒、响应级对齐，不能塞进普通逐 token KL 的同一实现。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page10-11">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page10-15" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page10-16" value="&lt;b&gt;Fewer Tokens, Fewer Layers&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;视觉输入 token 数与模型层数，也会影响蒸馏后的推理成本。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;题名提到 vision token pruning 与 OPD；未取得正文，不写具体剪枝规则。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page10-15">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page10-17" value="关键公式待正文核对" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page10-15">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page10-18" value="&lt;b&gt;改动：&lt;/b&gt;I · L&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;待核对&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;视觉 token 数与回答 token 长度应分开记录。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page10-15">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="12｜论文公式 25–28" id="page11">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page11-2" value="&lt;b&gt;一眼抓住方法：认知 → 改动位置 → 关键公式&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;所有公式均为 draw.io 原生 LaTeX / MathJax 标签；结构示意与原文公式分别标注。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page11-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page11-4" value="&lt;b&gt;VC-OPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;teacher偏好的token不一定依赖图像；应更多学习由真实视觉证据支撑的决策。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;在相同学生前缀上用原图和损坏图各评分一次，图像条件下的teacher决定方向，反事实概率差经sigmoid与权重和归一化后调节力度。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page11-3">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page11-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}\Delta_t=\log p_T^+(y_t)-\log p_T^-(y_t)\\ w_t=\sigma((\Delta_t-\tau_v)/T_v)\\\bar w_t=\frac{Nw_t}{\sum_jw_j+\epsilon}\\ A_t^{VC}=\bar w_t\widetilde A_t^{dir}\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page11-3">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page11-6" value="&lt;b&gt;改动：&lt;/b&gt;T · W · N&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;arXiv:2610.14939v1 Eq.9–12，合并展示&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;扰动差是视觉依赖的代理，不是严格因果效应；原OpenReview版本未核对。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page11-3">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page11-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page11-8" value="&lt;b&gt;Vision-OPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;同一个模型放大关键区域后看得更清楚，这种感知优势可以教给看全图的 student。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;裁剪区域作 privileged teacher 输入，全图 student 生成 rollout，再匹配两者分布。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page11-7">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page11-9" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}T_t=S_{\bar\theta}(\cdot|x,I_{\rm crop},y_{&amp;lt;t})\\ S_t=S_\theta(\cdot|x,I_{\rm full},y_{&amp;lt;t})\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page11-7">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page11-10" value="&lt;b&gt;改动：&lt;/b&gt;T&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文机制式&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;模型不一定更大；核心是输入信息差。区域获取也需要说明。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page11-7">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page11-11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page11-12" value="&lt;b&gt;VA-OPD / Visual Advantage&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;真正视觉相关的 token 很少，按所有语言 token 平均会稀释视觉监督。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;比较 teacher 有/无精细视觉的 logprob，重加权 rollout，并分高低 VA 两组分别平均 KL。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page11-11">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page11-13" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}v_t=\log T(y_t|I_{\rm fine},h_t)-\log T(y_t|I_{\rm coarse},h_t)\\ L=L_{\rm highVA}+L_{\rm lowVA}\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page11-11">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page11-14" value="&lt;b&gt;改动：&lt;/b&gt;T · W · N&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文核心机制&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;VA 是输入干预的概率变化，不是 RL 的 Q−V；组大小归一化是关键。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page11-11">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page11-15" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page11-16" value="&lt;b&gt;GUI-SD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;GUI 定位需要把监督集中到可靠且影响坐标的数字位置。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;teacher 看目标 bounding box 与 Gaussian soft mask，按数字位意义及 teacher confidence 加权。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page11-15">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page11-17" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$L=\sum_t w_{\rm digit}(t)\,w_{\rm conf}(t)\,D(T_t\|S_t)$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page11-15">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page11-18" value="&lt;b&gt;改动：&lt;/b&gt;T · W · I&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;target 区域只供训练 teacher；confidence 仍是代理。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page11-15">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="13｜论文公式 29–32" id="page12">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page12-2" value="&lt;b&gt;一眼抓住方法：认知 → 改动位置 → 关键公式&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;所有公式均为 draw.io 原生 LaTeX / MathJax 标签；结构示意与原文公式分别标注。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page12-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page12-4" value="&lt;b&gt;D-OPSD / Few-step Image Diffusion&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;少步扩散模型继续学新概念时，应沿自己的少步轨迹监督，避免破坏原生成方式。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;student 仅看文本，self-teacher 同时看文本与目标图像特征，匹配学生 rollout 上的预测。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page12-3">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page12-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$L=\mathbb E_{z_k\sim S}\sum_kD\big(T_k(\cdot|\text{text,image}),S_k(\cdot|\text{text})\big)$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page12-3">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page12-6" value="&lt;b&gt;改动：&lt;/b&gt;T · I · H&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;图像扩散轨迹不是文本 CoT；具体预测对象以原文为准。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page12-3">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page12-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page12-8" value="&lt;b&gt;On-Policy Hindsight / Early Risk&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;未来信息可以作为训练中的 hindsight，但部署时只能用当时可见信息。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;这是题名层面的归类；正文不可读，具体 teacher 条件及损失待核对。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page12-7">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page12-9" value="关键公式待正文核对" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page12-7">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page12-10" value="&lt;b&gt;改动：&lt;/b&gt;T&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;待核对&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;不把其他 search hindsight 论文当作这篇。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page12-7">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page12-11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page12-12" value="&lt;b&gt;OPSD / Self-Distilled Reasoner&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;同一个模型看到参考解法后，可以给只看题目的自己提供更好的局部指导。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;student 生成回答，带 verified reasoning traces 等 privileged context 的 self-teacher 在同一前缀打分。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page12-11">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page12-13" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}T_t=\pi_{\bar\theta}(\cdot|x,z,y_{&amp;lt;t})\\ S_t=\pi_\theta(\cdot|x,y_{&amp;lt;t})\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page12-11">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page12-14" value="&lt;b&gt;改动：&lt;/b&gt;T&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文机制式&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;teacher 看答案有帮助不等于所有偏好都适合 student；z 在测试时不存在。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page12-11">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page12-15" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page12-16" value="&lt;b&gt;ReDraft&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;新任务几乎不会做时，先把学生回答修订成它能学的正确文本，可能更容易起步。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;参考专家答案修订错误学生回答，只保留验证通过的结果，随后做 SFT。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page12-15">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page12-17" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$L_{\rm ReDraft}=-\sum_t\log S_\theta(y_t^{\rm revised}|x,y_{&amp;lt;t}^{\rm revised})$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page12-15">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page12-18" value="&lt;b&gt;改动：&lt;/b&gt;D · H · F&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;使用修订前缀的 SFT，不是学生原前缀上的 OPD loss。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page12-15">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="14｜论文公式 33–36" id="page13">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page13-2" value="&lt;b&gt;一眼抓住方法：认知 → 改动位置 → 关键公式&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;所有公式均为 draw.io 原生 LaTeX / MathJax 标签；结构示意与原文公式分别标注。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page13-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page13-4" value="&lt;b&gt;PIVOT&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;全部失败时，最终奖励不给差异；失败诊断可以形成额外的 teacher 监督。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;Analyzer 定位预算下的 pivot，teacher 利用诊断重打分失败轨迹，联合 GRPO 与门控 OPD。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page13-3">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page13-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$L=L_{\rm GRPO}+\lambda\,m_{\rm confidence}L_{\rm OPD}(T_{\rm diagnosis},S)$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page13-3">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page13-6" value="&lt;b&gt;改动：&lt;/b&gt;T · W · A&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;pivot 是预算下首次不可恢复动作；训练不只更新 pivot 那一个 token。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page13-3">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page13-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page13-8" value="&lt;b&gt;Dr.OPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;teacher 纠正信号是否值得加强，要看它与任务奖励提升方向是否一致。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;用 token 蒸馏梯度与奖励梯度的内积近似双层优化权重，借 JVP 计算后加权 divergence。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page13-7">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page13-9" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}c_t=g_t^{\rm OPD\,\top}\widehat g_R\\ w_t\approx\operatorname{clip}\left(1+\lambda\frac{c_t}{\operatorname{RMS}(c)}\right)\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page13-7">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page13-10" value="&lt;b&gt;改动：&lt;/b&gt;W · A · C&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;结构示意，权重机制&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;权重来自近似梯度对齐，不是直接替换 token 或真实反事实 advantage。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page13-7">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page13-11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page13-12" value="&lt;b&gt;CorrGRPO&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;多奖励时，advantage 的分母也会决定学习强度；相关性与数值尺度应分开看。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;保留中心化总奖励分子，把总奖励方差中的协方差项换成 Pearson 相关系数。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page13-11">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page13-13" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\widehat A_i=\frac{\sum_l(R_i^l-\bar R^l)}{\sqrt{\sum_{l,m}\widehat\rho_{lm}+\epsilon}}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page13-11">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page13-14" value="&lt;b&gt;改动：&lt;/b&gt;N&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文核心式&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;分子仍有尺度；不自动提供 token credit，也不解决全同奖励组。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page13-11">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page13-15" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page13-16" value="&lt;b&gt;RLCSD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;看参考后改变的很多只是风格；正确/错误参考作对照，更可能留下内容信号。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;正负参考使用相同模板，取 teacher logprob 对比，以 tanh 调制 GRPO advantage 并保持原奖励符号。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page13-15">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page13-17" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$e_t=\log T_+(y_t|h_t)-\log\!\left[\frac1K\sum_kT_{-,k}(y_t|h_t)\right]$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page13-15">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page13-18" value="&lt;b&gt;改动：&lt;/b&gt;T · A · W&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文核心式&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;丢弃全对/全错组；错误轨迹的 token 不因对比信号变成正 advantage。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page13-15">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="15｜论文公式 37–40" id="page14">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page14-2" value="&lt;b&gt;一眼抓住方法：认知 → 改动位置 → 关键公式&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;所有公式均为 draw.io 原生 LaTeX / MathJax 标签；结构示意与原文公式分别标注。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page14-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page14-4" value="&lt;b&gt;Draft-OPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;投机解码的 draft 错误不能只被最终正确文本覆盖，必须保留被拒绝的提议来学。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;target 辅助稳定主轨迹，从 anchor 重放 draft block；accepted 用 FKL、rejected 用位置衰减 RKL。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page14-3">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page14-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{aligned}\mathcal L=\tfrac12\big[&amp;amp;\operatorname{mean}_{\rm acc}D_{\rm KL}(T\|S)\\+&amp;amp;\operatorname{wmean}_{\rm rej,\gamma^{k-1}}D_{\rm KL}(S\|T)\big]\end{aligned}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page14-3">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page14-6" value="&lt;b&gt;改动：&lt;/b&gt;H · F · W · I · L&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文核心式简写&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;draft block 是投机提议单位，目标是接受长度与加速，非 AC2 的价值 chunk。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page14-3">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page14-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page14-8" value="&lt;b&gt;DF-OPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;题目很少也能产生很多不同前缀；teacher 可以先自己出题再教 student。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;teacher 无外部 seed 出固定题库，student 反复采样，蒸馏目标保持不变。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page14-7">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page14-9" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}D_{\rm external}\longrightarrow D_T\\ L_{\rm OPD}\ \text{保持不变}\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page14-7">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page14-10" value="&lt;b&gt;改动：&lt;/b&gt;D&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文机制式&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;64 题足够仅是所测配置的观察；不意味着少算力或没有预训练知识。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page14-7">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page14-11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page14-12" value="&lt;b&gt;AOPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;teacher 喜欢的动作，应按当前 student 沿这一步能否成功来评价。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;把 student advantage 加权的 teacher 目标，改写为终局奖励乘概率比项与 teacher 分布项之差。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page14-11">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page14-13" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{aligned}\widehat J&amp;amp;=\frac{R-b}{H}\sum_t\bigg[\\&amp;amp;\frac{T(a_t\mid h_t)}{S(a_t\mid h_t)}\log S_\theta(a_t\mid h_t)\\&amp;amp;-\mathbb E_{a\sim T}\log S_\theta(a\mid h_t)\bigg]\end{aligned}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page14-11">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page14-14" value="&lt;b&gt;改动：&lt;/b&gt;A · F · W · N&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文未截断估计器&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;没有显式逐 token advantage 标签；双边截断后是另一个加权目标，理论保证是精确 proximal 条件。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page14-11">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page14-15" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page14-16" value="&lt;b&gt;AC2&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;critic 足够可靠时，不需要完整 rollout 也能得到任务训练信号。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;从同一 replay prefix 采样多个新 chunk，可靠题用末端 critic value，其他题及抽查组用终局评分。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page14-15">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page14-17" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}v_i=\begin{cases}R_i,&amp;amp;\text{complete/audit}\\V(s c_i),&amp;amp;\text{partial, ready}\end{cases}\\\widehat A_i=v_i-\bar v\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page14-15">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page14-18" value="&lt;b&gt;改动：&lt;/b&gt;H · A · N · C · L&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文核心式&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;需要训练及校验 critic；主实验无 std 分母，chunk 内仍共用 advantage。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page14-15">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="16｜论文公式 41–44" id="page15">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page15-2" value="&lt;b&gt;一眼抓住方法：认知 → 改动位置 → 关键公式&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;所有公式均为 draw.io 原生 LaTeX / MathJax 标签；结构示意与原文公式分别标注。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page15-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page15-4" value="&lt;b&gt;STOPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;局部 OPD 不必等回答结束；随机截断的后段缺失可以用逆概率加权补偿。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;随机停止 block，以 token 保留概率的倒数加权 loss，用上一步估计 token 数作为本步分母。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page15-3">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page15-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}p_t=\frac{L-K\lfloor(t-1)/K\rfloor}{L}\\\widehat G=\sum_{i,t\le M_i}\frac{h_{i,t}}{p_t}\\\mathbb E_S[\widehat G]=G\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page15-3">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page15-6" value="&lt;b&gt;改动：&lt;/b&gt;H · W · N · L&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文核心式，1-based token&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;保持局部梯度和；归一化仍有 N/C 尺度差异，不适用于依赖未生成未来的局部 loss。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page15-3">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page15-7" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page15-8" value="&lt;b&gt;DN-MOPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;老师分配正确还不够；跨领域反馈尺度失衡会让一个领域压过其他领域。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;按 pooled/domain log-ratio 标准差比缩放领域 advantage；不减均值，沿用 clipped 更新。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page15-7">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page15-9" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}w_d=\operatorname{clip}(\sigma_{\rm all}/\sigma_d,0.25,4)\\ \widetilde A_t=\operatorname{sg}[w_d A_t]\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page15-7">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page15-10" value="&lt;b&gt;改动：&lt;/b&gt;W · N&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文核心式（统一符号）&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;域级尺度不是 token 价值；不保证梯度范数相等。固定权重在部分尺寸已接近动态方法。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page15-7">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page15-11" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page15-12" value="&lt;b&gt;DIAL-OPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;大分歧未必值得学；两个模型都低概率的位置也会出现很大的 log-ratio。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;插值相对分歧与绝对概率差以选 top-K token；选中后保留原始 signed log-ratio 更新。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page15-11">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page15-13" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}s_\beta=|\log(q/p)|^{1-\beta}|q-p|^\beta\\ m_t=\mathbf1\{t\in\operatorname{TopK}(s_\beta)\}\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page15-11">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page15-14" value="&lt;b&gt;改动：&lt;/b&gt;W · N · L&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文核心式（统一符号）&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;选择分数改变，最终 reward 未替换；完整 rollout 仍生成。概率支持不是因果重要性。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page15-11">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+        <mxCell id="page15-15" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="850" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page15-16" value="&lt;b&gt;PowerOPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;相同比值的低概率分歧不该同样强；直接设计教学系数的概率几何。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;用有界、保符号的幂概率差替代 log-ratio；alpha 调整绝对概率区域的学习强度。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page15-15">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page15-17" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}r_t=\operatorname{sg}[q_t^\alpha-p_t^\alpha]\in[-1,1]\\ \mathcal L=-Z^{-1}\sum_t r_t\log p_{\theta,t}\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page15-15">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page15-18" value="&lt;b&gt;改动：&lt;/b&gt;A · F · W&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文核心式（统一符号）&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;没有构造插值分布；不是原始 KL 的同一梯度。缩放和相对权重一起改变。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page15-15">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="17｜论文公式 45–45" id="page16">
+    <mxGraphModel dx="1720" dy="1570" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1570" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page16-2" value="&lt;b&gt;一眼抓住方法：认知 → 改动位置 → 关键公式&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;所有公式均为 draw.io 原生 LaTeX / MathJax 标签；结构示意与原文公式分别标注。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page16-3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="800" height="640" />
+        </mxCell>
+        <mxCell id="page16-4" value="&lt;b&gt;DuoOPD&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;认知：&lt;/b&gt;学生已经做对时保护成功；学生做错且老师做对时，用老师已验证的答案支持纠错。&lt;br&gt;&lt;br&gt;&lt;b&gt;方法：&lt;/b&gt;学生验证结果决定更新系数的正负；师生四种联合结果决定原始评分、参考条件评分或同任务共享正权重。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page16-3">
+          <mxGeometry as="geometry" x="10" y="10" width="780" height="245" />
+        </mxCell>
+        <mxCell id="page16-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;$$\begin{gathered}A_{i,t}=(2r_{S,i}-1)m_{i,t},\quad m_{i,t}&amp;gt;0\\ \mathcal L=-\frac1B\sum_i\frac1{T_i}\sum_t\operatorname{sg}[A_{i,t}]\log\pi_\theta(o_{i,t}\mid q_i,o_{i,&amp;lt;t})\end{gathered}$$&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=20;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;align=left;" vertex="1" parent="page16-3">
+          <mxGeometry as="geometry" x="15" y="265" width="770" height="205" />
+        </mxCell>
+        <mxCell id="page16-6" value="&lt;b&gt;改动：&lt;/b&gt;T · A · W · N&lt;br&gt;&lt;b&gt;公式：&lt;/b&gt;原文 Eq.4 / Eq.8，正权重分支见本地解读&lt;br&gt;&lt;b&gt;边界：&lt;/b&gt;改变原始OPD目标；需要完整回答验证，不能据此认定识别了每个关键token。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=16;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="page16-3">
+          <mxGeometry as="geometry" x="10" y="490" width="780" height="140" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="18｜OPD信号变换对比" id="page17">
+    <mxGraphModel dx="1720" dy="1690" grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1720" pageHeight="1690" math="1" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="page17-2" value="&lt;b&gt;同一研究分支：如何重新决定 teacher–student 分歧的教学强度&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:18px&quot;&gt;共享动机不意味着算法等价：分布插值、系数变换、token 选择、领域尺度，是不同操作。&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=28;spacing=14;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="30" width="1640" height="100" />
+        </mxCell>
+        <mxCell id="page17-3" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;共同更新框架（局部信号）&lt;/b&gt;&lt;br&gt;$$g=Z^{-1}\sum_t\operatorname{sg}[m_t w_t f(p_t,q_t)]\nabla\log p_{\theta,t}$$&lt;br&gt;p：student token 概率；q：teacher token 概率；m：是否保留；w：额外权重&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=22;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="170" width="1640" height="190" />
+        </mxCell>
+        <mxCell id="page17-4" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;TOP-D｜混合分布&lt;/b&gt;&lt;br&gt;$$q_\lambda=(1-\lambda)p+\lambda q$$&lt;br&gt;$$f=\log(1-\lambda+\lambda q/p)$$&lt;br&gt;负向有下界；只依赖概率比&lt;br&gt;完整算法还有 return、标准化与内部迭代&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#e1d5e7;strokeColor=#9673a6;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="410" width="800" height="350" />
+        </mxCell>
+        <mxCell id="page17-5" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;PowerOPD｜变换系数&lt;/b&gt;&lt;br&gt;$$f=q^\alpha-p^\alpha\in[-1,1]$$&lt;br&gt;$$f(\epsilon p,\epsilon q)=\epsilon^\alpha f(p,q)$$&lt;br&gt;直接考虑绝对概率尺度&lt;br&gt;没有构造归一化的插值 teacher&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="410" width="800" height="350" />
+        </mxCell>
+        <mxCell id="page17-6" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;DIAL-OPD｜选择 token&lt;/b&gt;&lt;br&gt;$$s_\beta=|\log(q/p)|^{1-\beta}|q-p|^\beta$$&lt;br&gt;$$f_{\rm effective}=m_t\log(q/p)$$&lt;br&gt;插值的是选词分数；选中后仍用 log-ratio&lt;br&gt;完整 rollout 仍需生成和评分&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="810" width="800" height="350" />
+        </mxCell>
+        <mxCell id="page17-7" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;DN-MOPD｜校准领域尺度&lt;/b&gt;&lt;br&gt;$$w_d=\operatorname{clip}(\sigma_{\rm all}/\sigma_d,0.25,4)$$&lt;br&gt;$$f_{\rm effective}=w_d\log(q/p)$$&lt;br&gt;领域内同乘正数，保持正负号与排序&lt;br&gt;不是 token 重要性判断&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="880" y="810" width="800" height="350" />
+        </mxCell>
+        <mxCell id="page17-8" value="&lt;div style=&quot;padding:12px;box-sizing:border-box;&quot;&gt;&lt;b&gt;最直接的重合：DIAL 的选词分数 = Power 的系数幅度&lt;/b&gt;&lt;br&gt;$$s_{\rm DIAL,\beta=1}=|q-p|=|r_{\rm Power,\alpha=1}|$$&lt;br&gt;一个据此选择位置，一个直接据此加权；即便 DIAL 保留全部位置，也回到 vanilla OPD。&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;overflow=block;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=22;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1240" width="1640" height="190" />
+        </mxCell>
+        <mxCell id="page17-9" value="&lt;b&gt;共同边界：概率分歧 / 支持度 ≠ 对最终正确率的因果贡献&lt;/b&gt;&lt;br&gt;已做：插值、幂变换、稀疏监督、领域缩放。&lt;br&gt;这几篇尚未直接解决：高概率风格偏好是否值得学？低概率修复动作是否关键？&lt;br&gt;新 idea 若围绕任务收益，需要继续对照 AOPD、PIVOT、CC-OPD 等工作。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#172f36;fontFamily=Noto Sans CJK SC;fontSize=21;spacing=14;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="40" y="1470" width="1640" height="180" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

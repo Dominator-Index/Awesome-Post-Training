@@ -1,0 +1,3 @@
+SEAD: Competence-Aware On-Policy Distillation via Entropy-Guided Supervision
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/155569
+Preprint PDF: https://arxiv.org/pdf/2606.28562

@@ -1,0 +1,3 @@
+KL for a KL: On-Policy Distillation with Control Variate Baseline
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/149290
+Preprint PDF: https://arxiv.org/pdf/2605.07865

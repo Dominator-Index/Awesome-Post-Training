@@ -1,0 +1,4 @@
+On-Policy Hindsight Distillation for Early Risk Prediction
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/153484
+OpenReview PDF page: https://openreview.net/forum?id=L26pEowauj
+Automated PDF retrieval unavailable from OpenReview in this environment (HTTP 403 challenge).

@@ -1,0 +1,7 @@
+Title: PIVOT: Pivot-Aware On Policy Self Distillation for Multi-Turn VLM Agents
+Authors: Jiazhou Zhou, Hu Zhou, Yucheng Chen, Jinyuan Qu, Ying-Cong Chen, Lei Zhang
+arXiv: https://arxiv.org/abs/2609.35303
+PDF: https://arxiv.org/pdf/2609.35303v1
+Version: v1 (2026-09-28)
+Conference: ICLR 2027 Under Review (user provided; arXiv PDF states Preprint, not independently verified)
+SHA256: 9467beecb6d9879804698ed108b25d94a6152d9c01dc51ea40a74b36b63adad8

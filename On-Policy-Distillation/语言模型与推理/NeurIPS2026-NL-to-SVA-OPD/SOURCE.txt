@@ -1,0 +1,3 @@
+On-Policy Distillation with Open Property-Equivalence Reward for LLM-Based NL-to-SVA Generation
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/149770
+Preprint PDF: https://arxiv.org/pdf/2605.13501

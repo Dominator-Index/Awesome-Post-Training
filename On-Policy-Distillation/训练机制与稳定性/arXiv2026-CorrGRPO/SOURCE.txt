@@ -1,0 +1,5 @@
+Title: CorrGRPO: Correlation-Normalized GRPO for Multi-Reward Learning
+arXiv: https://arxiv.org/abs/2609.36820
+PDF: https://arxiv.org/pdf/2609.36820v1
+Status: arXiv preprint; conference status not verified
+SHA256: 37865f76a843f78ecaf6ea62c3017aca28c089c48ebfea5b7283d1e5a0d50286

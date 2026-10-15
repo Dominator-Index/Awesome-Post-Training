@@ -1,0 +1,13 @@
+{
+  "url": "https://github.com/WhenWen/AC2",
+  "commit": "5fbb11ba3fbd720b526632259ab047e7e3b70384",
+  "archive_url": "https://codeload.github.com/WhenWen/AC2/tar.gz/5fbb11ba3fbd720b526632259ab047e7e3b70384",
+  "archive_bytes": 4183893,
+  "retrieved": "2026-10-08",
+  "method": "official_github_codeload_archive",
+  "git_history_available": false,
+  "local_directory": "/usr/data/AC2",
+  "symlink": "AC2",
+  "archive_sha256": "1c287108e983c6d1e72ddccdd99b7c559863274cda6ed4af46d8594e06836c63",
+  "note": "Git HTTPS cloning failed twice (TLS error, timeout); downloaded full source snapshot for the exact commit from official GitHub codeload. Training not executed."
+}

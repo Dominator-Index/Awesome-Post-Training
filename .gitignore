@@ -1,0 +1,15 @@
+# Local repositories, experiment outputs, and environment state
+**/main
+**/AC2
+**/experiments*
+**/*-experiments
+**/__pycache__/
+*.pyc
+.DS_Store
+**/.ipynb_checkpoints/
+**/.venv/
+**/venv/
+**/checkpoints/
+**/wandb/
+**/*.part
+**/*.crdownload

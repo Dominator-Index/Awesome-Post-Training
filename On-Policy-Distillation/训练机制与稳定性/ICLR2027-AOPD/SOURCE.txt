@@ -1,0 +1,8 @@
+Title: When to Follow the Teacher: Advantage-Based On-Policy Distillation
+Authors: Anonymous authors
+Conference: ICLR 2027 Under Review (explicitly stated in PDF)
+Original local source: /usr/data/Awesome-Post-Training/On-Policy-Distillation/_sources/53047_When_to_Follow_the_Teach.pdf
+Pages: 19
+SHA256: c8a6dd0e3ad18b1c2946ac22a198e95bf3f9bf095cf904b26bb52ee24420b603
+Public paper URL: not identified; do not infer an OpenReview id from numeric filename
+Code: no official repository identified

@@ -1,0 +1,3 @@
+Cornerstones or Stumbling Blocks? Deciphering the Rock Tokens in On-Policy Distillation
+NeurIPS 2026 official listing: https://neurips.cc/virtual/2026/poster/152055
+Preprint PDF: https://arxiv.org/pdf/2605.09253
