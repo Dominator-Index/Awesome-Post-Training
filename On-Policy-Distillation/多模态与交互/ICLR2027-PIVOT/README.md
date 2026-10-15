@@ -34,4 +34,4 @@ ReDraft 构造验证通过的完整修订回答，再用于 SFT；PIVOT 在失�
 
 作者在五项多轮 VLM agent 任务上评估，覆盖网格谜题、3D 控制与导航、生成式推理。摘要报告 Qwen2.5-VL-3B 的总体准确率为 0.90，相对 SFT+GRPO 基线高约 8 个百分点；Qwen3-VL-2B 达到 0.92，相对该基线高约 12 个百分点。这些是作者报告的实验结果，尚未独立复现。
 
-本文档是归档与方法概览，不是完整精读。来源、版本及文件哈希见 [SOURCE.txt](SOURCE.txt)，结构化记录见 [manifest.jsonl](manifest.jsonl)。
+本文档是归档与方法概览，不是完整精读。来源、版本及文件哈希见 [SOURCE.txt](SOURCE.txt)，结构化记录见 `manifest.jsonl`（本地文件）。

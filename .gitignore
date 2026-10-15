@@ -13,3 +13,7 @@
 **/wandb/
 **/*.part
 **/*.crdownload
+
+# Keep JSON metadata and experiment records local.
+*.json
+*.jsonl

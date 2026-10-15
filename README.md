@@ -11,7 +11,7 @@
 
 ## 归档状态
 
-2026-10-15整理：45条记录，41篇有canonical PDF，4篇受OpenReview访问限制仍待补。每条有分类与方法入口；完整精读文件数量、PDF页数与SHA256见[归档报告](On-Policy-Distillation/download_summary.json)。不将预印本、Under Review、方法概览或探索实验等同于论文录用、完整精读或成功复现。
+2026-10-15整理：45条记录，41篇有canonical PDF，4篇受OpenReview访问限制仍待补。每条有分类与方法入口；完整精读文件数量、PDF页数与SHA256见`On-Policy-Distillation/download_summary.json`（本地文件）。不将预印本、Under Review、方法概览或探索实验等同于论文录用、完整精读或成功复现。
 
 ## 本地布局
 
@@ -28,4 +28,4 @@
 
 工作区`awesome-exploration-rl/Awesome-Post-Training`软链接指向整个仓库。原工作区顶层`On-Policy-Distillation`已迁移，不再保留该路径。
 
-本地代码checkout与实验输出保留在`/usr/data`，通过论文目录的`main`或实验软链接访问；这些本机入口不随本仓库提交。映射记录见[local-links.json](local-links.json)，迁移记录见[migration-20261015.json](migration-20261015.json)。PDF、论文笔记、draw.io源图与导出图册随仓库归档；论文版权归原作者或出版方。
+本地代码checkout与实验输出保留在`/usr/data`，通过论文目录的`main`或实验软链接访问；这些本机入口不随本仓库提交。映射记录见`local-links.json`（本地文件），迁移记录见`migration-20261015.json`（本地文件）。PDF、论文笔记、draw.io源图与导出图册随仓库归档；论文版权归原作者或出版方。

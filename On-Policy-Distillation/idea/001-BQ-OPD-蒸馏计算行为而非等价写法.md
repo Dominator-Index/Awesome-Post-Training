@@ -323,7 +323,7 @@ teacher 在同一个扩展支持上重新评分，三个训练目标仍使用相
 
 ![最终轮：输出正确性、生成长度与等价实现漂移](001-BQ-OPD-experiments/comparison/contract.png)
 
-[全部五组设置的图](001-BQ-OPD-experiments/comparison/pilot.pdf) · [汇总 JSON](001-BQ-OPD-experiments/comparison/summary.json) · [代码与运行说明](001-BQ-OPD-experiments/README.md)。所有原始结果目录通过同一链接可访问；每轮使用独立目录保存。
+[全部五组设置的图](001-BQ-OPD-experiments/comparison/pilot.pdf) · `001-BQ-OPD-experiments/comparison/summary.json`（本地文件） · [代码与运行说明](001-BQ-OPD-experiments/README.md)。所有原始结果目录通过同一链接可访问；每轮使用独立目录保存。
 
 ## 9. 当前判断：可以继续验证，但不能包装成已成功的新算法
 

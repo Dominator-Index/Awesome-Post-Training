@@ -4,7 +4,7 @@
 
 - [RoadMap：数学形式、组件与方法](RoadMap/README.md) · [可编辑draw.io](RoadMap/roadmap.drawio) · [PDF图册](RoadMap/roadmap.pdf)
 - [论文认知与关键公式](RoadMap/论文一句话认知.md) · [交互式浏览器](RoadMap/index.html)
-- [结构化目录CSV](论文目录.csv) · [归档manifest](manifest.jsonl) · [PDF检查报告](download_summary.json)
+- [结构化目录CSV](论文目录.csv) · `manifest.jsonl`（本地文件） · `download_summary.json`（本地文件）
 - [研究idea](idea/) · [OPSD：老师可以看答案的理解](OPSD理解-老师可以看答案.md)
 
 ## 分类与数量

@@ -1,10 +1,19 @@
-"""Regenerate editable diagrams and offline reading cards from papers.json.
+"""Regenerate editable diagrams and offline reading cards from the CSV catalog.
 No network, dependency installation, or training is performed.
 """
 from pathlib import Path
 import json, csv, html, xml.etree.ElementTree as ET
 R=Path(__file__).resolve().parent
-DATA=json.loads((R/'papers.json').read_text());P=DATA['papers'];COM=DATA['components']
+# CSV is published; optional JSON metadata stays local.
+COM = {'D': '题目与训练数据', 'H': 'rollout 与前缀分布', 'T': 'teacher 来源与额外信息', 'I': '监督接口与动作单位', 'F': '散度、估计器与梯度路径', 'A': '奖励、return、baseline 与 critic', 'W': 'token / trajectory 权重与门控', 'N': 'advantage / loss 归一化', 'C': '约束、更新幅度与训练调度', 'L': 'token length、截断与预算'}
+FIELDS = {'name': '论文', 'high_level': '一句话认知', 'method': '方法',
+          'formula': '关键公式', 'formula_kind': '公式性质', 'problem': '问题',
+          'boundary': '适用边界', 'evidence': '证据', 'evidence_location': '定位',
+          'path': '目录', 'source_url': '来源'}
+with (R/'论文组件矩阵.csv').open(encoding='utf-8', newline='') as catalog:
+ P = [{**{key: row[column] for key, column in FIELDS.items()},
+       'components': row['修改组件'].split()} for row in csv.DictReader(catalog)]
+DATA = {'components': COM, 'papers': P}
 COL={'D':('#dae8fc','#6c8ebf'),'H':('#dae8fc','#6c8ebf'),'T':('#e1d5e7','#9673a6'),'I':('#e1d5e7','#9673a6'),'F':('#d5e8d4','#82b366'),'A':('#d5e8d4','#82b366'),'W':('#fff2cc','#d6b656'),'N':('#fff2cc','#d6b656'),'C':('#ffe6cc','#d79b00'),'L':('#ffe6cc','#d79b00')}
 mx=ET.Element('mxfile',host='drawio',version='30.3.14')
 class Page:

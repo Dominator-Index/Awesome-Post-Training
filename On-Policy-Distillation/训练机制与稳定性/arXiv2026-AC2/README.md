@@ -11,7 +11,7 @@
 - **理解核对**：[02｜用可信 Critic 与 Partial Rollouts 节省推理采样](02-理解核对-用可信Critic和Partial-Rollouts节省推理采样.md)。
 - **飞书精简版**：[03｜AC2 核心理解](03-AC2核心理解-飞书精简版.md)。
 - **官方代码**：[WhenWen/AC2](https://github.com/WhenWen/AC2) · [本地代码入口](AC2) → `/usr/data/AC2`。
-- **代码版本**：`5fbb11ba3fbd720b526632259ab047e7e3b70384`。两次 Git 直连克隆失败，已改用 GitHub 官方 codeload 下载该 commit 的源码快照；目录包含完整源码文件，不含 Git 历史。来源见 [code_manifest.json](code_manifest.json)。
+- **代码版本**：`5fbb11ba3fbd720b526632259ab047e7e3b70384`。两次 Git 直连克隆失败，已改用 GitHub 官方 codeload 下载该 commit 的源码快照；目录包含完整源码文件，不含 Git 历史。来源见 `code_manifest.json`（本地文件）。
 
 核心区别：从历史完整轨迹抽取 prefix，在同一个 prefix 上采样若干新 action chunk。对 critic 已达到可信门槛的问题，用 chunk 末端的预测价值构造 advantage；对尚未达到门槛的问题与抽查组，仍完整 rollout 到终局评分。**它改变了优势估计和采样长度，并非只重分组既有终局奖励。**
 

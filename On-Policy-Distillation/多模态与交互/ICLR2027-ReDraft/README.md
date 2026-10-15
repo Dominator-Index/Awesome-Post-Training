@@ -36,4 +36,4 @@
 
 ## 文件记录
 
-原始上传文件名：`9629_ReDraft_Don_t_Just_Distil.pdf`，归档后统一命名为 `paper.pdf`。来源和 SHA-256 见 [SOURCE.txt](SOURCE.txt)，结构化记录见 [manifest.jsonl](manifest.jsonl)。PDF 已通过文件头及 pdfinfo 检查，并人工核对首页题名。
+原始上传文件名：`9629_ReDraft_Don_t_Just_Distil.pdf`，归档后统一命名为 `paper.pdf`。来源和 SHA-256 见 [SOURCE.txt](SOURCE.txt)，结构化记录见 `manifest.jsonl`（本地文件）。PDF 已通过文件头及 pdfinfo 检查，并人工核对首页题名。
