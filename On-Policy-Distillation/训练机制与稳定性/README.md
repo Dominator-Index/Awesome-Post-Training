@@ -30,3 +30,7 @@
 | [DIAL-OPD](ICLR2027-DIAL-OPD/README.md) | 大分歧未必值得学；两个模型都低概率的位置也会出现很大的 log-ratio。 | [PDF](ICLR2027-DIAL-OPD/paper.pdf) · [精读](ICLR2027-DIAL-OPD/analysis.md) |
 | [PowerOPD](arXiv2026-PowerOPD/README.md) | 相同比值的低概率分歧不该同样强；直接设计教学系数的概率几何。 | [PDF](arXiv2026-PowerOPD/paper.pdf) · [精读](arXiv2026-PowerOPD/analysis.md) |
 | [DuoOPD](arXiv2026-DuoOPD/README.md) | 学生已经做对时保护成功；学生做错且老师做对时，用老师已验证的答案支持纠错。 | [PDF](arXiv2026-DuoOPD/paper.pdf) · [精读](arXiv2026-DuoOPD/analysis.md) |
+
+## 相关理论与机制分析
+
+- [Fisher与参数更新稀疏性](../../理论与机制分析/arXiv2026-Fisher-Update-Sparsity/README.md)：关注跨SFT、RL与OPD的参数更新机制，主分类为“理论与机制分析”；交叉引用不增加本类条目数。

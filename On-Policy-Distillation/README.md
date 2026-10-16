@@ -25,6 +25,10 @@
 
 AC2和CorrGRPO属于RL方法，ReDraft主要用修订后的文本做SFT；收录用于比较组件，不把它们统称为OPD算法。TOP-D、TrOPD、PowerOPD和DIAL-OPD的区别见[信号变换对比](RoadMap/OPD信号变换对比.md)。
 
+## 跨方法理论与机制分析
+
+- [Fisher与参数更新稀疏性](../理论与机制分析/arXiv2026-Fisher-Update-Sparsity/README.md)：用对角模型Fisher解释后训练中梯度为何集中，理论覆盖SFT、RL与OPD，实验验证RL与OPD。主条目归档在“理论与机制分析”，此处为交叉入口，不计入本目录45条记录。
+
 ## 完成状态说明
 
 - 所有条目有README方法入口、研究问题分类、认知与方法卡片；正文未取得的条目不猜关键公式。
