@@ -8,6 +8,15 @@
 
 [本地PDF](paper.pdf) · [原文PDF](https://arxiv.org/pdf/2609.36262v1) · [分类目录](../README.md) · [仓库首页](../../README.md)
 
+## 分节阅读
+
+按文件编号阅读；每篇内部采用对应的层级编号。当前先讲解Abstract与Introduction。
+
+| 编号 | Markdown | 内容 |
+|---|---|---|
+| 01 | [Abstract解读](01-Abstract解读.md) | 基础术语、摘要的论证顺序、理论与实验分别说明什么 |
+| 02 | [Introduction解读](02-Introduction解读.md) | 引言逐段逻辑、Fisher梯度上界、Figure 1与Figure 2、教学例子 |
+
 ## 分类
 
 - **主分类：** 后训练 → 理论与机制分析。
