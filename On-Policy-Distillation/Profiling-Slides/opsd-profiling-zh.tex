@@ -1,0 +1,1008 @@
+% !TEX program = xelatex
+% Build: latexmk -xelatex main-zh.tex
+% 中文版；英文原版见 main.tex
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usetheme[progressbar=frametitle,numbering=fraction,block=fill]{metropolis}
+
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs,array,tabularx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+% ---------- 中文字体 ----------
+\usepackage{xeCJK}
+\setCJKsansfont{PingFang SC}[UprightFont={* Regular},BoldFont={* Semibold}]
+\setCJKmainfont{Songti SC}
+
+% ---------- colors ----------
+\definecolor{ink}{HTML}{1F2A37}
+\definecolor{accent}{HTML}{C2410C}
+\definecolor{cBlue}{HTML}{2563EB}
+\definecolor{cGreen}{HTML}{15803D}
+\definecolor{cPurple}{HTML}{7C3AED}
+\definecolor{cRed}{HTML}{B91C1C}
+\definecolor{cGray}{HTML}{6B7280}
+\definecolor{cTeal}{HTML}{0F766E}
+\definecolor{soft}{HTML}{F3F4F6}
+
+\setbeamercolor{frametitle}{bg=ink,fg=white}
+\setbeamercolor{progress bar}{fg=accent,bg=ink!30}
+\setbeamercolor{title separator}{fg=accent}
+\setbeamercolor{alerted text}{fg=accent}
+\setbeamercolor{normal text}{fg=ink,bg=white}
+\setbeamercolor{block title}{bg=ink!12,fg=ink}
+\setbeamercolor{block body}{bg=soft}
+\setbeamercolor{block title alerted}{bg=accent!18,fg=accent!80!black}
+\setbeamercolor{block body alerted}{bg=accent!5}
+\setbeamercolor{block title example}{bg=cGreen!15,fg=cGreen!80!black}
+\setbeamercolor{block body example}{bg=cGreen!4}
+\setbeamertemplate{itemize item}{\color{accent}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{cGray}--}
+\metroset{sectionpage=progressbar}
+
+% ---------- notation ----------
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\pit}{\pi_\theta}
+\newcommand{\pitea}{\pi_{\bar\theta}}
+\newcommand{\piold}{\pi_{\mathrm{old}}}
+\newcommand{\sg}{\operatorname{sg}}
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\Ind}{\mathbb{I}}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\acc}{\operatorname{acc}}
+\newcommand{\ans}{\operatorname{ans}}
+\newcommand{\pct}{\operatorname{p}_{99}}
+\newcommand{\AUROC}{\operatorname{AUROC}}
+\newcommand{\dm}{d_{\mathrm{model}}}
+\newcommand{\hl}[1]{{\color{accent}#1}}
+\newcommand{\gnote}[1]{{\scriptsize\color{cGray}#1}}
+
+% ---------- cost tags ----------
+\newcommand{\ctag}[2]{\tikz[baseline=(T.base)]\node[fill=#1!14,text=#1!75!black,
+  rounded corners=1.5pt,inner xsep=2.5pt,inner ysep=1.2pt,font=\scriptsize\bfseries](T){#2};}
+\newcommand{\cFree}{\ctag{cGreen}{免费}}
+\newcommand{\cFwd}{\ctag{cBlue}{+前向}}
+\newcommand{\cLog}{\ctag{cPurple}{全词表}}
+\newcommand{\cGrad}{\ctag{accent}{梯度}}
+\newcommand{\cEval}{\ctag{cGray}{评测}}
+\newcommand{\cOff}{\ctag{ink}{离线}}
+\newcommand{\cRun}{\ctag{cRed}{+训练}}
+\newcommand{\cBr}{\ctag{cTeal}{续写}}
+
+% ---------- tables ----------
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newenvironment{stattable}[1][2.1cm]{%
+  \scriptsize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.22}%
+  \tabularx{\linewidth}{@{}>{\raggedright\arraybackslash\bfseries}p{#1} Y
+    >{\centering\arraybackslash}p{1.05cm} >{\raggedright\arraybackslash}p{2.9cm}@{}}
+  \toprule
+  \normalfont\bfseries 统计量 & \bfseries 定义 / 做法 & \bfseries 成本 & \bfseries 说明什么\\
+  \midrule}
+ {\bottomrule\endtabularx}
+
+\newenvironment{symtable}{%
+  \footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}%
+  \tabularx{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.40\linewidth} Y@{}}
+  \toprule \textbf{符号} & \textbf{含义}\\ \midrule}
+ {\bottomrule\endtabularx}
+
+% equation box
+\newtcolorbox{eqbox}[1][]{enhanced,colback=soft,colframe=ink!40,boxrule=0.5pt,
+  arc=2pt,left=4pt,right=4pt,top=2pt,bottom=2pt,#1}
+
+\title{OPSD 实验的统计量}
+\subtitle{OPD / OPSD 实验的通用统计量，以及检验 PMI / 前缀兼容度假设的统计量}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+% =====================================================================
+\begin{frame}{目录}
+\begin{columns}[T]
+\column{0.46\textwidth}
+\textbf{导读}（6 页）：先看这里\\[3pt]
+\textbf{第一部分：通用统计量}\\[2pt]
+\small
+\begin{enumerate}
+  \setlength\itemsep{-1pt}
+  \item[0.] 设定、记号、成本标签
+  \item[A.] 正确性检查
+  \item[B.] 信号落在哪里
+  \item[C.] 估计量质量
+  \item[D.] 梯度与优化器
+  \item[E.] 校准与置信度
+  \item[F.] 表示与机制
+  \item[G.] 泛化、遗忘与鲁棒性
+  \item[H.] 实验严谨性
+  \item[] 汇总
+\end{enumerate}
+\column{0.52\textwidth}
+\textbf{第二部分：idea 003（PMI 与兼容度）}\\[2pt]
+\small
+\begin{enumerate}
+  \setlength\itemsep{-1pt}
+  \item[II.0] 记号与假设
+  \item[II.1] 训练健康度与任务指标
+  \item[II.2] 逐 token 信号
+  \item[II.3] 师生分布差距
+  \item[II.4] PMI 分解与前缀兼容度
+  \item[II.5] 前缀可靠性：分支续写
+  \item[II.6] 推理行为与多样性
+  \item[II.7] 参数动态与成本
+  \item[II.8] 切片、执行计划与分阶段
+\end{enumerate}
+\end{columns}
+\gnote{每个符号都在使用前定义；附录列出缩写、符号索引和参考文献。}
+\end{frame}
+
+% =====================================================================
+\section{导读：先看这几页}
+
+\begin{frame}{导读（1/6）：一句话说清 OPSD}
+同一个模型扮演两个角色：
+\begin{itemize}
+  \setlength\itemsep{3pt}
+  \item \textbf{学生}：只看题目 $x$，自己写出解答 $y=(y_1,\dots,y_L)$。写第 $t$ 个词时，前面已经写下的部分记为 $h_t$，学生对下一个词的概率分布记为 $p_t$。
+  \item \textbf{老师}：除了题目，还看到答案或参考解法 $z$；它在同一位置对下一个词的分布记为 $q_t$。
+\end{itemize}
+学生写完后，对其中每个词 $y_t$ 打一个分（$\log$ 为自然对数）：
+\begin{eqbox}
+\[
+d_t=\log q_t(y_t)-\log p_t(y_t)
+\qquad\text{＝ 看过答案的老师比学生更想写 }y_t\text{ 多少}
+\]
+\end{eqbox}
+\begin{itemize}
+  \item $d_t>0$：训练加强这个词；$d_t<0$：训练削弱这个词。
+  \item 后面所有统计量都在回答两个问题：\hl{\textbf{这个打分靠不靠谱？训练有没有真的变好？}}
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{导读（2/6）：第一部分其实只问四个问题}
+\footnotesize
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries\raggedright\arraybackslash}p{2.3cm} >{\raggedright\arraybackslash}p{4.1cm} Y >{\raggedright\arraybackslash}p{1.2cm}@{}}
+\toprule
+问题 & 看什么 & 怎么解读 & 详见\\
+\midrule
+1. 训练健康吗？ & 学生分布与老师分布的 KL 散度、学生的熵、回答长度 & KL 散度应下降；熵骤降说明模型变“死板”；长度暴涨或暴跌都要警惕 & II.1，II.3\\
+2. 真的变强了吗？ & 留出题上的 pass@1（单次答对率）和 pass@$K$（$K$ 次采样中至少一次答对的比例） & pass@1 涨而 pass@$K$ 跌：模型只是变保守了，没有学到新东西 & II.1，G\\
+3. 打分方向对吗？ & 答错的回答里，$d_t$ 加起来是否偏负 & 应与最终对错大体一致；不一致说明老师在乱打分 & C\\
+4. 是不是在抄答案？ & 答案是否提前出现、推理是否变短、“wait”“but”这类反思词是否变少 & 老师看过答案，容易教学生“直接写答案、别想了”；长推理模型上最常见的退化 & II.6\\
+\bottomrule
+\end{tabularx}
+\par\vspace{6pt}
+\small 梯度噪声、有效秩、CKA、logit lens 等是\textbf{出了问题之后查原因}用的，第一轮实验可以先不看。
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{导读（3/6）：idea 003 第一步——把打分拆成两半}
+再算一个“老师\textbf{不看}答案”时对下一个词的分布，记为 $q^0_t$，就能把 $d_t$ 拆开：
+\begin{eqbox}
+\[
+d_t=\underbrace{\log q_t(y_t)-\log q^0_t(y_t)}_{\textstyle\mathrm{PMI}_t}
++\underbrace{\log q^0_t(y_t)-\log p_t(y_t)}_{\textstyle\Delta^{\mathrm{snap}}_t}
+\]
+\end{eqbox}
+\begin{itemize}
+  \setlength\itemsep{4pt}
+  \item $\mathrm{PMI}_t$：看了答案之后，老师对这个词的看法变了多少。
+  \item $\Delta^{\mathrm{snap}}_t$：老师用的是这一轮开始时的参数，而学生在这一轮里已经更新了几步。第一个 mini-batch 上它等于 0，一般很小。
+  \item 所以打分几乎全部来自 $\mathrm{PMI}_t$，也就是\hl{\textbf{答案带来的信息}}。它偏好哪些词、压制哪些词，就是“答案”在教学生什么。
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{导读（4/6）：前缀兼容度 $S_t$ 与假设 H2}
+把前面每个词的 $\mathrm{PMI}$ 累加起来，得到前缀兼容度：
+\begin{eqbox}
+\centering $S_t=\sum_{u=1}^{t-1}\mathrm{PMI}_u$\quad ＝ 看过答案的人比没看过的人更认同这段前缀多少
+\end{eqbox}
+\footnotesize
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{@{}>{\centering\arraybackslash}p{1.1cm} >{\raggedright\arraybackslash}p{5.4cm} Y@{}}
+\toprule
+$S_t$ & 含义 & H2 的预测\\
+\midrule
+$\approx0$ & 还看不出学生要走哪条路（多在开头） & 老师\textbf{不可靠}：把学生拽向参考解法，压掉其他正确思路\\
+$>0$ & 学生正沿着参考解法的路走 & 老师\textbf{可靠}\\
+$<0$ & 学生已经走偏（换了方法或出了错） & 老师\textbf{失真}：好比拿对不上的标准答案批改作业\\
+\bottomrule
+\end{tabularx}
+\par\vspace{4pt}
+\small\textbf{H2}：老师准不准由 $S_t$ 决定，而不是由“写到第几个词”决定。PW-OPSD 发现越往后老师越准，可能是因为它只看了做对的解答，而这些解答越往后越贴近参考解法。
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{导读（5/6）：H3、H1，以及怎么验证老师说得对不对}
+\small
+\begin{itemize}
+  \setlength\itemsep{5pt}
+  \item \textbf{H3：反思词的符号翻转。}前缀对路时，知道答案的人不会说“等等，我检查一下”，所以 wait 的 $\mathrm{PMI}$ 为负，OPSD 会压制反思；前缀走偏时，知道答案的人反而会说“回头看看”，$\mathrm{PMI}$ 接近 0 或为正。\\
+  若成立：要保护反思，应按前缀状态（$S_t$）屏蔽，而不是把 wait 列进保护词表。
+  \item \textbf{H1：可推得性。}给学生自己也能推出的提示（例如图像裁剪），OPSD 有益；给学生推不出的信息（例如完整参考解法），在需要试错的长推理里反而退化：学生学会了“不用探索”。
+  \item \textbf{分支续写：验证老师在某个位置说得对不对。}从同一段前缀出发，分别接上学生原来写的词和老师最想写的词，各让学生（不看答案）续写多次，比较最终答对率。老师的词答对率更高，就说明老师在这里说对了。这一步很贵，只抽几百个位置做（II.5）。
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{导读（6/6）：最少要做的四步}
+\begin{enumerate}
+  \setlength\itemsep{8pt}
+  \item 训练时多做一次“老师不看答案”的前向，得到 $q^0_t$；$\mathrm{PMI}_t$ 和 $S_t$ 随之而来，代价只是一次前向。
+  \item 盯住四条曲线：学生与老师分布的 KL 散度、学生的熵、回答长度、留出题上的 pass@1 与 pass@$K$。
+  \item 画一张图：按 $S_t$ 的正、负、近零把位置分成三段，看每段里反思词的 $\mathrm{PMI}$。这一步检验 H3，\textbf{不需要续写}，最便宜，可以最先出结果。
+  \item 挑 60 道题做分支续写（阶段 A，见 II.8），检验 H2。
+\end{enumerate}
+\vspace{6pt}
+\gnote{前三步在一次正常的训练里就能完成。导读中的符号都在当页给出直观含义，正式定义见后面的记号页。}
+\end{frame}
+
+% =====================================================================
+\section{第一部分\quad 设定与记号}
+
+\begin{frame}{设定：在线自蒸馏（OPSD）}
+\begin{columns}[c]
+\column{0.45\textwidth}
+\centering
+\begin{tikzpicture}[
+  box/.style={draw=ink!60,rounded corners=3pt,fill=soft,align=center,
+    font=\footnotesize,minimum height=0.9cm,text width=1.9cm},
+  lab/.style={font=\scriptsize,color=cGray,align=center},
+  >={Stealth[length=2.2mm]}]
+  \node[box] (stu) {\textbf{学生} $\pit$\\ 看到 $x,\ h_t$};
+  \node[box,below=1.3cm of stu,fill=cPurple!8,draw=cPurple!60] (tea)
+    {\textbf{老师} $\pitea$\\ 看到 $x,\ \hl{z},\ h_t$};
+  \node[box,right=1.5cm of stu,text width=2.5cm] (resp) {回答\\ $y=(y_1,\dots,y_L)$};
+  \node[box,right=1.5cm of tea,text width=2.5cm,fill=accent!8,draw=accent!60] (sig)
+    {每个 $t$ 的 $d_t$};
+  \draw[->] (stu) -- node[lab,above]{采样} (resp);
+  \draw[->] (resp) -- node[lab,right,text width=1.2cm]{给每个 $y_t$ 打分} (sig);
+  \draw[->] (tea) -- node[lab,below]{$\log q_t(y_t)$} (sig);
+  \draw[->] (sig.north west) -- node[lab,left,pos=0.45]{更新 $\theta$} (stu.south east);
+\end{tikzpicture}
+
+\column{0.53\textwidth}
+\footnotesize
+\begin{itemize}
+  \setlength\itemsep{2pt}
+  \item $x$：题目（prompt）。$z$：特权信息（例如参考解法），只给老师看。
+  \item 学生 $\pit$（参数为 $\theta$）采样一个回答 $y=(y_1,\dots,y_L)$；$h_t=(y_1,\dots,y_{t-1})$ 是位置 $t$ 之前的前缀。
+  \item 学生：$p_t=\pit(\cdot\mid x,h_t)$。\\
+    老师：同一个网络，参数为 $\bar\theta$，上下文中多了 $z$：$q_t=\pitea(\cdot\mid x,z,h_t)$。
+  \item 逐 token 信号 $d_t=\log q_t(y_t)-\log p_t(y_t)$：老师比学生更偏好 $y_t$ 时为正。
+\end{itemize}
+\end{columns}
+\vspace{4pt}
+\gnote{普通 OPD 用同样的公式，只是把 $\pitea(\cdot\mid x,z,h_t)$ 换成一个外部老师模型。精确记号见后面五页。}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{记号（1/5）：题目、回答、信号}
+\begin{symtable}
+$x$ & 题目（prompt）\\
+$z$ & 只给老师看的特权信息，例如参考解法或最终答案\\
+$\mathcal V$;\ \ $a\in\mathcal V$ & 词表；一个 token\\
+$G$ & 每道题采样的回答数（组大小）\\
+$y^{(i)}=(y^{(i)}_1,\dots,y^{(i)}_{L_i})$,\ \ $i=1,\dots,G$ & 对 $x$ 的第 $i$ 个回答；$L_i$ 是它的 token 数\\
+$h^{(i)}_t=(y^{(i)}_1,\dots,y^{(i)}_{t-1})$ & 回答 $i$ 在位置 $t$ 之前的前缀\\
+$p_{i,t}=\pit(\cdot\mid x,h^{(i)}_t)$,\ \ $q_{i,t}=\pitea(\cdot\mid x,z,h^{(i)}_t)$ & 学生和老师的下一个 token 分布\\
+$d_{i,t}=\log q_{i,t}(y^{(i)}_t)-\log p_{i,t}(y^{(i)}_t)$ & 逐 token 训练信号\\
+$y,\ L,\ h_t,\ p_t,\ q_t,\ d_t$ & 只涉及一个回答时，省去下标 $i$ 的同一对象\\
+\end{symtable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{记号（2/5）：参数与策略}
+\begin{symtable}
+$\theta$ & 当前学生参数\\
+$\theta_k$;\ \ $\theta_0$ & 第 $k$ 次优化器更新后的参数；初始参数\\
+$\Delta\theta_k=\theta_k-\theta_{k-1}$ & 第 $k$ 次参数更新量\\
+$\bar\theta$ & 老师参数：等于 $\theta$，或为 $\theta$ 的指数滑动平均，或固定不变\\
+$\piold$ & 生成当前 batch 的策略；它的 log 概率由训练引擎重新计算\\
+$T$ & 采样温度\\
+$u_t\in\mathbb R^{\abs{\mathcal V}}$ & 位置 $t$ 的学生 logits，已除以 $T$，因此 $p_t=\operatorname{softmax}(u_t)$，即 $p_t(a)=\exp(u_t(a))/\sum_{a'}\exp(u_t(a'))$\\
+$e_a\in\mathbb R^{\abs{\mathcal V}}$ & token $a$ 的 one-hot 向量\\
+\end{symtable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{记号（3/5）：微积分与概率}
+\begin{symtable}
+$\log$, $\exp$ & 自然对数与指数\\
+$\mathbb R$ & 实数\\
+$\E$, $\Pr$ & 期望、概率\\
+$\nabla_\theta$, $\nabla^2_\theta$ & 对 $\theta$ 的梯度与 Hessian\\
+$\sg(\cdot)$ & 停止梯度：数值照常传递，梯度不回传\\
+$\KL(p\Vert q)=\sum_{a}p(a)\log\frac{p(a)}{q(a)}$ & KL 散度\\
+$\Ind[\cdot]$;\ \ $\operatorname{sign}(\xi)\in\{-1,0,1\}$ & 条件成立为 1，否则为 0；数 $\xi$ 的符号\\
+$\cos(\mathbf v,\mathbf w)=\mathbf v^\top\mathbf w/(\norm{\mathbf v}\,\norm{\mathbf w})$ & 两个向量的余弦相似度\\
+\end{symtable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{记号（4/5）：范数与统计}
+\begin{symtable}
+$\norm{\cdot}$,\ \ $\norm{\cdot}_F$,\ \ $\norm{\cdot}_\infty$;\ \ $\operatorname{tr}$ & 欧氏范数、Frobenius 范数、绝对值最大的元素；矩阵的迹\\
+$\abs{\cdot}$ & 数的绝对值；集合的元素个数；序列的 token 数\\
+$\operatorname{mean}$, $\operatorname{std}$, $\pct$ & 一组数的均值、标准差、第 99 百分位数\\
+$\AUROC(s\to c)$ & 对分数 $s_j$ 与二值标签 $c_j$：$\Pr(s_j>s_{j'}\mid c_j=1,\,c_{j'}=0)$，平局计 $\tfrac12$\\
+$\rho_{\mathrm S}$ & Spearman 相关：秩的 Pearson 相关\\
+\end{symtable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{记号（5/5）：评测与网络内部}
+\begin{symtable}
+$c_i\in\{0,1\}$;\ \ $R_i$ & 验证器对 $y^{(i)}$ 的判定（1 为正确）；它的标量奖励，例如 $R_i=c_i$\\
+$\ans(y^{(i)})$;\ \ $\mathcal S_i\subseteq\{1,\dots,L_i\}$ & 提取出的最终答案；最终答案 token 所在的位置\\
+$\mathcal P$;\ \ $N$ & 探针集：固定的题目和采样种子；每 $N$ 个训练步重跑一次\\
+$\mathcal D_{\mathrm{train}}$,\ \ $\mathcal D_{\mathrm{held}}$ & 训练题目；同分布的留出题目\\
+$\acc(\mathcal D)$ & 题目集 $\mathcal D$ 上的 pass@1：$c_i$ 在题目和样本上的均值（每题 16 个样本时称 avg@16）\\
+$\ell=1,\dots,N_L$;\ \ $\dm$ & 层编号与层数；隐藏维度\\
+$\phi^{(\ell)}_t\in\mathbb R^{\dm}$ & 第 $\ell$ 层之后、位置 $t$ 的隐藏状态\\
+$\Phi_\ell$ & 一组固定探针 token 的 $\phi^{(\ell)}_t$ 按行排成的矩阵\\
+\end{symtable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{训练损失及其估计的量}
+\begin{columns}[T]
+\column{0.38\textwidth}
+\small
+逐 token 损失（策略梯度形式）：
+\begin{eqbox}
+\[
+\mathcal L_t=-\sg(d_t)\,\log p_t(y_t)
+\]
+\end{eqbox}
+它的期望梯度就是反向 KL 的梯度：
+\begin{eqbox}
+\[
+\E_{y_t\sim p_t}\!\big[\nabla_\theta\mathcal L_t\big]=\nabla_\theta\KL(p_t\Vert q_t)
+\]
+\end{eqbox}
+条件：前缀 $h_t$ 视为固定，梯度不流入 $\bar\theta$。
+\column{0.59\textwidth}
+\footnotesize
+\textbf{证明。}利用 $\sum_{a}\nabla_\theta p_t(a)=0$ 和 $\nabla_\theta p_t(a)=p_t(a)\nabla_\theta\log p_t(a)$：
+\[
+\begin{aligned}
+\nabla_\theta\KL(p_t\Vert q_t)
+&=\sum_{a\in\mathcal V}\nabla_\theta p_t(a)\big[\log p_t(a)-\log q_t(a)+1\big]\\
+&=\E_{a\sim p_t}\big[(\log p_t(a)-\log q_t(a))\,\nabla_\theta\log p_t(a)\big].
+\end{aligned}
+\]
+对采样到的 token $a=y_t$，因子 $\log p_t(y_t)-\log q_t(y_t)$ 等于 $-d_t$，所以期望里的项就是 $-d_t\nabla_\theta\log p_t(y_t)=\nabla_\theta\mathcal L_t$。\\[4pt]
+C 节衡量这个单样本估计离它要估计的量有多远。
+\end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{成本标签，以及各组统计量所在的环节}
+\begin{columns}[T]
+\column{0.42\textwidth}
+\footnotesize\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}l >{\raggedright\arraybackslash}p{4.3cm}@{}}
+\cFree & 已经算好，只需记录\\
+\cFwd & 多一次前向\\
+\cLog & 需要整个词表（或前若干个 token）上的概率\\
+\cGrad & 需要每个 micro-batch 的梯度，或多一次反向\\
+\cEval & 只在评测时计算\\
+\cOff & 在保存的 checkpoint 或 dump 上计算\\
+\cRun & 需要额外的训练\\
+\cBr & 从强制前缀开始的学生续写\\
+\end{tabular}
+\column{0.56\textwidth}
+\centering
+\vspace{14pt}
+\begin{tikzpicture}[
+  stage/.style={draw=ink!50,rounded corners=3pt,fill=soft,align=center,
+    font=\footnotesize,minimum width=2.15cm,minimum height=1.05cm},
+  grp/.style={font=\scriptsize\bfseries,color=accent,align=center},
+  >={Stealth[length=2mm]}]
+  \node[stage] (roll) {采样\\ $y\sim\piold$};
+  \node[stage,right=0.35cm of roll] (score) {老师\\ 打分};
+  \node[stage,right=0.35cm of score] (upd) {更新\\ $\theta_{k-1}\!\to\theta_k$};
+  \draw[->] (roll) -- (score);
+  \draw[->] (score) -- (upd);
+  \draw[->] (upd.north) -- ++(0,0.35) -| (roll.north);
+  \node[grp,below=1pt of roll] {A};
+  \node[grp,below=1pt of score] {A\ \ B\ \ C};
+  \node[grp,below=1pt of upd] {C\ \ D};
+  \node[stage,below=0.95cm of roll,xshift=0.6cm,minimum width=2.9cm,fill=cBlue!6,draw=cBlue!50]
+    (probe) {探针集 $\mathcal P$，\\ 每 $N$ 步};
+  \node[stage,below=0.95cm of upd,xshift=-0.6cm,minimum width=2.9cm,fill=cGray!8,draw=cGray!60]
+    (eval) {评测与\\ 离线分析};
+  \node[grp,below=1pt of probe] {C\ \ D\ \ E\ \ F};
+  \node[grp,below=1pt of eval] {D\ \ F\ \ G\ \ H};
+\end{tikzpicture}
+\end{columns}
+\end{frame}
+
+% =====================================================================
+\section{A.\quad 正确性检查}
+
+\begin{frame}{A. 正确性检查（1/2）：信号算对了吗？}
+\begin{stattable}
+空 $z$ 回归 & 按训练时的方式构造老师输入但去掉 $z$，并令 $\bar\theta=\theta$ 打分。此时 $q_t=p_t$，所以 $\max_t\abs{d_t}$ 应低于噪声底 $\nu$（下一行）。 & \cFwd\ 一次 & 拼接错误、位置错开一位、chat 模板不一致。\\
+噪声底 $\nu$ & 在理应无关的条件下（换一种 batch 组成；训练引擎 vs.\ 推理引擎）对同一组 token 打两次分，得到 $q^{(1)}_t,q^{(2)}_t$；在所有打分 token 上取 $\nu=\pct\abs{\log q^{(1)}_t(y_t)-\log q^{(2)}_t(y_t)}$。 & \cFwd & $\abs{d_t}<\nu$ 的值与数值噪声无法区分。\\
+Token 对齐 & 老师输入中对应位置的 token id 等于采样出的 $y_t$ 的比例。 & \cFree & 回答被解码后重新分词造成的错位。\\
+老师输入截断 & $\abs{x}+\abs{z}+L$ 的分布；超过老师上下文上限 $L_{\max}$ 的比例；$z$ 被截掉一部分的比例。 & \cFree & 老师根本没看到完整的 $z$。\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{A. 正确性检查（2/2）：数值与记账}
+\begin{stattable}
+温度一致性 & 学生的 log 概率必须使用采样温度 $T$（verl 在 \texttt{dp\_actor.py:226} 把 logits 除以 $T$）。老师的温度要显式选定并记录。 & \cFree & 温度不一致会让所有 $d_t$ 整体偏移。\\
+数值异常 & NaN/Inf 的个数；$\log p_t(y_t)$ 恰好为 0 或小于 $-30$ 的 token 比例；$\max_t\norm{u_t}_\infty$。 & \cFree & bf16 下的溢出与饱和。\\
+老师版本 & $\bar\theta$ 最近一次从 $\theta$ 拷贝时的步数。若老师是 EMA，即 $\bar\theta\leftarrow\beta\bar\theta+(1-\beta)\theta$，衰减系数 $\beta\in[0,1)$，还要记录 $\norm{\bar\theta-\theta}/\norm{\theta}$。 & \cFree & 同步是否按预期进行。\\
+重复行 & verl-agent 通过复制行来补齐 batch（\texttt{adjust\_batch}，\texttt{multi\_turn\_rollout/utils.py:86}）；记录被复制行的比例。 & \cFree & 复制行会让部分回答在统计和梯度中权重过高。\\
+\end{stattable}
+\vspace{2pt}
+\gnote{行号对应 verl-agent 的 commit 20bd331。}
+\end{frame}
+
+% =====================================================================
+\section{B.\quad 信号落在哪里}
+
+\begin{frame}{B. 信号落在哪里（1/2）：集中程度}
+\small
+单元的信号量：一个 token 为 $\abs{d_{i,t}}$，一个回答为 $\sum_t\abs{d_{i,t}}$，一道题为 $\sum_{i=1}^{G}\sum_t\abs{d_{i,t}}$。
+下面 $a_1,\dots,a_n$ 是某一层级上 $n$ 个单元的信号量。\\[3pt]
+\begin{stattable}
+Gini 系数 & $\mathrm{Gini}=\dfrac{\sum_{j=1}^n\sum_{j'=1}^n\abs{a_j-a_{j'}}}{2n\sum_{j=1}^n a_j}$；0 表示完全均匀，接近 1 表示几乎全部集中在一个单元上。三个层级都要报告。 & \cFree & 更新是不是由少数 token、回答或题目驱动的？\\
+Top-1\% 占比 & $\sum_{j\in\mathcal T}a_j\big/\sum_{j}a_j$，其中 $\mathcal T$ 是 $a_j$ 最大的 1\% 单元。 & \cFree & 同一个问题，更直观。\\
+低信号题目 & 每道题的每 token 平均信号 $\bar a(x)=\sum_{i,t}\abs{d_{i,t}}\big/\sum_i L_i$；$\bar a(x)<\epsilon_{\mathrm{low}}$ 的题目比例，$\epsilon_{\mathrm{low}}$ 是选定的阈值，例如 $\epsilon_{\mathrm{low}}=\nu$。 & \cFree & 类似 GRPO 里全对或全错的组：生成成本照付，几乎没有梯度。\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{B. 信号落在哪里（2/2）：逐题动态}
+\small
+对题目 $x$，$k$ 取遍 $x$ 被采样到的训练步；$\acc_k(x)=\frac1G\sum_{i=1}^G c_i$ 是它在第 $k$ 步的答对比例；$v_k(x)=\Ind[\acc_k(x)\ge\tfrac12]$ 表示该题算作已解出。\\[2pt]
+\begin{stattable}
+逐题学习曲线 & 第一个满足 $v_k(x)=1$ 的 $k$；遗忘事件数 $\sum_k\Ind[v_{k-1}(x)=1,\ v_k(x)=0]$（Toneva et al.\ 2019）。 & \cFree & 哪些题学得快，哪些题学会后又忘了。\\
+信号与提升 & 跨题目计算 $\rho_{\mathrm S}$：一边是累计信号 $\sum_k\bar a_k(x)$（$\bar a$ 在第 $k$ 步的值），一边是提升 $\acc_{\mathrm{last}}(x)-\acc_{\mathrm{first}}(x)$（最后一次与第一次被采样的步）。 & \cFree\newline\cEval & 得到更多信号的题目提升更多吗？\\
+有效 token 比例 & mask 之后进入损失的 token 数，除以补齐后 batch 张量的全部位置数。 & \cFree & 多少计算没有产生梯度。\\
+训练/评测重叠 & 与某道训练题共享 13-token 片段的评测题比例。 & \cOff & 数据污染。\\
+\end{stattable}
+\end{frame}
+
+% =====================================================================
+\section{C.\quad 估计量质量}
+
+\begin{frame}{C. 估计量质量（1/2）：单样本 vs.\ 全分布}
+\begin{columns}[T]
+\column{0.49\textwidth}
+\textbf{单样本估计} \gnote{（训练中使用）}
+\[
+\hat g=\sum_{t=1}^{L}\nabla_\theta\mathcal L_t=-\sum_{t=1}^{L}d_t\,\nabla_\theta\log p_t(y_t)
+\]
+\column{0.49\textwidth}
+\textbf{全分布梯度} \gnote{（需要 $q_t$ 在整个 $\mathcal V$ 上的值）}
+\[
+g^{\mathrm{full}}=\sum_{t=1}^{L}\nabla_\theta\KL(p_t\Vert q_t)
+\]
+\end{columns}
+\gnote{由训练损失那一页的恒等式，$\E[\hat g-g^{\mathrm{full}}]=0$：两者之差是纯噪声。两者都把每个前缀 $h_t$ 视为固定，即忽略 $\theta$ 对后续前缀的影响。}\par\vspace{4pt}
+\begin{stattable}
+方向一致性 & 在 $\mathcal P$ 上对每个回答计算 $\cos(\hat g,g^{\mathrm{full}})$，再对 batch 平均之后计算一次。只取一层的参数以降低成本。 & \cLog\newline\cGrad & 在梯度空间里（而不只是标量上）信号有多吵。\\
+组内梯度离散度 & $\hat g_i$：由回答 $i$ 得到的估计；$\bar g=\frac1G\sum_i\hat g_i$；报告 $\frac1G\sum_i\norm{\hat g_i-\bar g}^2\big/\norm{\bar g}^2$。 & \cGrad & $G$ 够大吗？\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{C. 估计量质量（2/2）：与结果的一致性、在线程度}
+\begin{stattable}[2.3cm]
+密集信号 vs.\ 结果 & $\bar d_i=\frac1{L_i}\sum_t d_{i,t}$；报告 $\AUROC(\bar d\to c)$。 & \cFree & 逐 token 的判断与最终对错一致吗？\\
+与 GRPO 的符号一致率 & $\hat A_i=\frac{R_i-\operatorname{mean}(R_1,\dots,R_G)}{\operatorname{std}(R_1,\dots,R_G)+10^{-6}}$，$\mathcal I=\{i:\hat A_i\ne0\}$，在整个 batch 上汇总：$\sum_{i\in\mathcal I}\sum_t\Ind[\operatorname{sign}d_{i,t}=\operatorname{sign}\hat A_i]\big/\sum_{i\in\mathcal I}L_i$。 & \cFree & 混入 RL 时：两种信号推动方向相同的 token 占比。\\
+离策略比率 & $r_t=\pit(y_t\mid x,h_t)/\piold(y_t\mid x,h_t)$：它的百分位数，以及一个 mini-batch 中 $n$ 个 token 的归一化有效样本量 $\mathrm{ESS}/n=(\sum_t r_t)^2\big/(n\sum_t r_t^2)\in(0,1]$。 & \cFree & 一步之内偏离 on-policy 的程度。\\
+陈旧度 & 异步 rollout 时：生成回答所用的参数与正在更新的参数之间相隔的优化器步数。 & \cFree & “on-policy”还成立吗？（AsyncOPD、f-OPD）\\
+\end{stattable}
+\end{frame}
+
+% =====================================================================
+\section{D.\quad 梯度与优化器}
+
+\begin{frame}{D. 梯度（1/3）：梯度噪声尺度}
+\small
+$g_b$：一个累积步内 $b$ 条序列的平均梯度（所有数据并行 rank）；$g_B$：一个优化器步内全部 $B$ 条序列的平均梯度。
+
+若单条序列梯度的均值为 $g$、协方差为 $\Sigma$，则 $\E\norm{g_b}^2=\norm{g}^2+\operatorname{tr}(\Sigma)/b$，$B$ 同理；联立求解：
+\begin{eqbox}
+\[
+\widehat{\norm{g}^2}=\frac{B\norm{g_B}^2-b\norm{g_b}^2}{B-b},\qquad
+\widehat{\operatorname{tr}\Sigma}=\frac{\norm{g_b}^2-\norm{g_B}^2}{1/b-1/B},\qquad
+B_{\mathrm{noise}}=\frac{\widehat{\operatorname{tr}\Sigma}}{\widehat{\norm{g}^2}}
+\]
+\end{eqbox}
+\begin{itemize}
+  \item 分子和分母先分别在若干步上平滑，再相除。
+  \item $B\ll B_{\mathrm{noise}}$：加大 batch 仍能几乎成比例地减少所需步数；$B\gg B_{\mathrm{noise}}$：每步多出来的样本基本浪费（McCandlish et al.\ 2018）。
+  \item 成本 \cGrad：第一个 micro-batch 之后多做一次梯度范数归约。若损失按 token 平均聚合，按序列的视角只是近似。
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{D. 梯度（2/3）：步方向与逐 token 推力}
+\begin{stattable}
+Micro-batch 一致性 & $g_1,\dots,g_M$：一步中 $M$ 个 micro-batch 的梯度，$\bar g_M=\frac1M\sum_m g_m$；报告 $\frac1M\sum_m\cos(g_m,\bar g_M)$。 & \cGrad & 步方向稳定吗？\\
+更新持续性 & $\cos(\Delta\theta_k,\Delta\theta_{k-1})$，按层计算（保存每层上一步的更新可能放不进显存，可以只选几层）。 & \cFree & 在振荡，还是在稳步前进？\\
+逐 token logit 梯度 & $\nabla_{u_t}\mathcal L_t=-d_t\,(e_{y_t}-p_t)$，因此 $\norm{\nabla_{u_t}\mathcal L_t}=\abs{d_t}\sqrt{1-2p_t(y_t)+\sum_{a}p_t(a)^2}$。按相对位置 $t/L$ 分桶、按 token 类型（数字、公式符号、格式 token、“wait”这类词）分别求和。 & \cLog\ \gnote{（actor 已有 logits）} & 参数实际被推向哪里：高置信 token（$p_t(y_t)\to1$）即使 $\abs{d_t}$ 很大，梯度也几乎为零。\\
+\end{stattable}
+\vspace{2pt}
+\gnote{这里忽略了裁剪和损失的 token 聚合权重，它们只会缩放某些行或把它们置零。}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{D. 梯度（3/3）：损失地形与可塑性}
+\begin{stattable}
+锐度 & $\lambda_{\max}$：$\nabla^2_\theta\mathcal L_{\mathcal P}$ 的最大特征值，其中 $\mathcal L_{\mathcal P}$ 是 $\mathcal P$ 上所有 token 的 $\mathcal L_t$ 之和；用 Hessian--向量积做幂迭代（PyHessian）。 & \cOff & 训练是否在走向更尖锐的区域？\\
+特征有效秩 & $\sigma_1,\dots,\sigma_r$：$\Phi_\ell$ 的奇异值；$\bar\sigma_j=\sigma_j/\sum_{j'}\sigma_{j'}$；$\operatorname{erank}(\Phi_\ell)=\exp\!\big(-\sum_j\bar\sigma_j\log\bar\sigma_j\big)$（Roy \& Vetterli 2007）。 & \cFwd & 特征坍缩；已知与可塑性丧失相关。\\
+权重范数增长 & $\norm{\theta_k}/\norm{\theta_0}$，按层计算。 & \cFree & 权重增长也伴随可塑性丧失（Dohare et al.\ 2024）。\\
+休眠单元 & MLP 单元（down-projection 的输入）中，在所有探针 token 上绝对激活都低于阈值 $\delta$ 的比例。 & \cFwd & 不再起作用的单元。\\
+\end{stattable}
+\end{frame}
+
+% =====================================================================
+\section{E.\quad 校准与置信度}
+
+\begin{frame}{E. 校准（1/2）：置信度分数及其评价方式}
+\small
+反向 KL 是 mode-seeking 的（Gu et al.\ 2024），所以蒸馏后的学生容易过度自信。每个回答有两种置信度分数：\vspace{-4pt}
+\[
+\kappa^{\mathrm{tok}}_i=\exp\Big(\frac1{\abs{\mathcal S_i}}\sum_{t\in\mathcal S_i}\log p_{i,t}\big(y^{(i)}_t\big)\Big),\qquad
+\kappa^{\mathrm{vote}}_i=\frac1G\sum_{j=1}^{G}\Ind\big[\ans(y^{(j)})=\ans(y^{(i)})\big]
+\]
+\gnote{$\kappa^{\mathrm{tok}}_i$：答案 token 概率的几何平均。$\kappa^{\mathrm{vote}}_i$：组内最终答案与它相同的回答占比。}\\
+对 $n$ 个回答，分数为 $\kappa_i$（任一种），判定为 $c_i$：\vspace{-2pt}
+\begin{columns}[T]
+\column{0.56\textwidth}
+\begin{eqbox}
+\[
+\mathrm{ECE}=\sum_{m=1}^{N_{\mathrm{bin}}}\frac{\abs{\mathcal B_m}}{n}\,\Big|\operatorname*{mean}_{i\in\mathcal B_m}c_i-\operatorname*{mean}_{i\in\mathcal B_m}\kappa_i\Big|
+\]
+\end{eqbox}
+\gnote{把 $[0,1]$ 等分成 $N_{\mathrm{bin}}$ 个区间；$\mathcal B_m$ 是 $\kappa_i$ 落在第 $m$ 个区间的回答（Guo et al.\ 2017）。}
+\column{0.40\textwidth}
+\begin{eqbox}
+\[
+\mathrm{Brier}=\frac1n\sum_{i=1}^n(\kappa_i-c_i)^2
+\]
+\end{eqbox}
+区分度：$\AUROC(\kappa\to c)$。\\
+三者成本：\cFree
+\end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{E. 校准（2/2）：过度自信与不确定性}
+\begin{stattable}
+错误答案的置信度 & $\operatorname{mean}\{\kappa_i: c_i=0\}$。 & \cFree & 过度自信是否在加剧？\\
+Self-certainty & $\frac1{L_i}\sum_t\KL(U\Vert p_{i,t})$，$U$ 是 $\mathcal V$ 上的均匀分布（Kang et al.\ 2025）。 & \cLog & 从整个分布读出的总体置信水平。\\
+语义熵 & 按最终答案把 $G$ 个回答聚类；簇 $\mathcal C$ 的占比为 $\hat p_{\mathcal C}=\abs{\mathcal C}/G$；$\mathrm{SE}(x)=-\sum_{\mathcal C}\hat p_{\mathcal C}\log\hat p_{\mathcal C}$。报告 $\AUROC(-\mathrm{SE}\to c^{\mathrm{maj}})$，最大簇正确时 $c^{\mathrm{maj}}(x)=1$。 & \cFree & 不确定性还能标出错误吗？（简化自 Kuhn et al.\ 2023，原文按蕴含关系聚类。）\\
+含糊表达频率 & 每 1000 token 中“I'm not sure”“might be”等短语的出现次数。 & \cFree & 模型是否不再表达怀疑？\\
+\end{stattable}
+\end{frame}
+
+% =====================================================================
+\section{F.\quad 表示与机制}
+
+\begin{frame}{F. 表示（1/2）：网络变了多少、变在哪里}
+\small
+两个矩阵 $X$ 与 $Y$ 行数都为 $n$（同样的 token，同样的顺序），列已中心化，它们的线性 CKA（中心化核对齐，Kornblith et al.\ 2019）为：
+\begin{eqbox}
+\[
+\mathrm{CKA}(X,Y)=\frac{\norm{Y^\top X}_F^2}{\norm{X^\top X}_F\,\norm{Y^\top Y}_F}\in[0,1]
+\]
+\end{eqbox}
+\begin{stattable}
+逐层漂移 & 对每一层 $\ell$，在同一组探针 token 上计算 $\mathrm{CKA}(X,Y)$，$X$、$Y$ 分别是 $\theta_0$ 和 $\theta_k$ 下的 $\Phi_\ell$。 & \cFwd & 变化发生在浅层还是深层？\\
+师生对齐 & 行为回答位置 $t$。$X$：给定 $(x,h_t)$ 时学生第 $\ell$ 层的状态；$Y$：给定 $(x,z,h_t)$ 时老师第 $\ell$ 层的状态。画出它随训练的变化。 & \cFwd\ \gnote{（在老师前向上加 hook）} & 学生的内部状态是否在向 $z$ 在老师中诱导出的状态靠拢？\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{F. 表示（2/2）：机制}
+\begin{stattable}
+对 $z$ 的注意力 & $\mathcal Z$：老师输入中 $z$ 的位置；$\mathcal R$：回答的位置；$\omega^{(\ell,j)}_{t,s}$：第 $\ell$ 层第 $j$ 个头中从位置 $t$ 到 $s$ 的注意力权重；每层 $N_h$ 个头。$\alpha_\ell=\frac{1}{\abs{\mathcal R}N_h}\sum_{t\in\mathcal R}\sum_{j=1}^{N_h}\sum_{s\in\mathcal Z}\omega^{(\ell,j)}_{t,s}$。 & \cFwd & 老师读了多少 $z$；若 $\bar\theta=\theta$，它在训练中是否变化。\\
+Logit lens 稳定层 & $W_U$：unembedding 矩阵；$\operatorname{Norm}$：最后的归一化层。$\ell^\star_t$：使得对所有 $\ell'\ge\ell$ 都有 $\arg\max_a[W_U\operatorname{Norm}(\phi^{(\ell')}_t)]_a=\arg\max_a p_t(a)$ 的最小 $\ell$。 & \cFwd & 训练是否让决策提前到更浅的层？\\
+正确性探针 & 从 $\phi^{(\ell)}_{L_i}$（回答的最后一个 token）到 $c_i$ 的逻辑回归；每层 $\ell$ 的留出 AUROC。 & \cOff & 模型“知道”自己错了吗？\\
+激活幅度 & $\max_{t,\ell}\norm{\phi^{(\ell)}_t}_\infty$ 和 $\max_t\norm{u_t}_\infty$。 & \cFwd & bf16 风险（massive activations，Sun et al.\ 2024）。\\
+\end{stattable}
+\vspace{1pt}
+\gnote{FlashAttention 内核不返回注意力权重，所以计算 $\alpha_\ell$ 要用 eager attention。}
+\end{frame}
+
+% =====================================================================
+\section{G.\quad 泛化、遗忘与鲁棒性}
+
+\begin{frame}{G. 泛化（1/2）：还有什么跟着变了}
+\begin{stattable}
+通用能力回退 & 训练前后在 MMLU-Pro、GPQA、IFEval、HumanEval（或你关心的评测集）上对比。 & \cEval & 提升是否以牺牲其他能力为代价？\\
+记忆差距 & $\acc(\mathcal D_{\mathrm{train}})-\acc(\mathcal D_{\mathrm{held}})$。 & \cEval & 学的是方法，还是记住了题目？\\
+跨领域迁移 & 在数学上训练，在代码、科学、逻辑上评测。 & \cEval & 提升能迁移多远？\\
+改写鲁棒性 & 把每道评测题写成 $J$ 种模板或改写；$\acc_j$：模板 $j$ 下的准确率；报告 $\operatorname{std}(\acc_1,\dots,\acc_J)$。 & \cEval & 是否过拟合了训练模板？\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{G. 泛化（2/2）：更难的题、事实性、不完美的参考}
+\begin{stattable}
+难度外推 & 在比训练集更难的题（更高难度等级、竞赛题）上的准确率。 & \cEval & 提升能延伸到更难的题吗？\\
+事实性 & 在 SimpleQA 类数据集上：作答中答错的比例。 & \cEval & 过度自信是否蔓延到事实类问题？\\
+带噪 $z$ 的鲁棒性 & 训练时把比例为 $\eta$ 的 $z$ 换成错误参考；画出最终 $\acc(\mathcal D_{\mathrm{held}})$ 随 $\eta$ 的变化。 & \cRun & 对参考质量的敏感度；真实数据集里本来就有错误解法。\\
+\end{stattable}
+\end{frame}
+
+% =====================================================================
+\section{H.\quad 实验严谨性}
+
+\begin{frame}{H. 严谨性（1/2）：核心数字的不确定性}
+\begin{itemize}
+  \item \textbf{种子。}每个设置至少 3 个训练种子；报告均值和 95\% 置信区间（Agarwal et al.\ 2021）。
+  \item \textbf{按题目 bootstrap。}有放回地重采样题目，重算指标，取第 2.5 和第 97.5 百分位数。在 30 题的测试集上一道题就是 $1/30\approx3.3$ 个点，所以至少要用 avg@16。
+  \item \textbf{配对比较：}方法 A 与 B 在同一组题目上比较。
+\end{itemize}
+\begin{columns}[T]
+\column{0.52\textwidth}
+\begin{eqbox}
+\[
+\chi^2=\frac{(n_{01}-n_{10})^2}{n_{01}+n_{10}}
+\]
+\end{eqbox}
+\column{0.44\textwidth}
+\small
+$n_{10}$：A 解出而 B 没解出的题数；$n_{01}$：反之。与自由度为 1 的 $\chi^2$ 分布比较（McNemar 1947）。
+\end{columns}
+\vspace{4pt}
+\gnote{用 avg@16 时每题得分不是二值的，此时改用对逐题差值的配对 bootstrap。}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{H. 严谨性（2/2）：噪声底、算力对齐、checkpoint 选择}
+\begin{itemize}
+  \item \textbf{探针统计量的噪声底。}在同一个 checkpoint 上用不同采样种子跑两次 $\mathcal P$，得到某个统计量的两个值 $\hat m^{(1)},\hat m^{(2)}$。小于 $\abs{\hat m^{(1)}-\hat m^{(2)}}$ 的变化不应解读。
+  \item \textbf{按算力对齐的横轴。}除了训练步数，还要以累计生成 token 数、老师打分 token 数和 GPU 小时为横轴作图。OPSD 每步多一次老师前向，按步数作图会美化它。
+  \item \textbf{固定的 checkpoint 选择规则。}报告最后一个 checkpoint，以及按事先固定的规则在验证集上选出的最佳 checkpoint。绝不在测试集上挑选。
+\end{itemize}
+\end{frame}
+
+% =====================================================================
+\section{汇总}
+
+\begin{frame}{执行计划：三档}
+\scriptsize
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l >{\raggedright\arraybackslash}p{2.4cm} Y@{}}
+\toprule
+档位 & 时机 / 数据 & 统计量\\
+\midrule
+1 & 每步，完整训练 batch & A：token 对齐、截断、温度、数值异常、老师版本、重复行。
+B：除训练/评测重叠外全部。C：密集信号 vs.\ 结果、符号一致率、离策略比率、陈旧度。
+D：噪声尺度、micro-batch 一致性、更新持续性、逐 token logit 梯度、权重范数。
+E：置信度分数、ECE、Brier、错误答案置信度、语义熵、含糊表达。\\
+2 & 每 $N$ 步，探针集 $\mathcal P$ & C：方向一致性、组内梯度离散度。D：有效秩、休眠单元。
+E：self-certainty。F：逐层漂移、师生对齐、对 $z$ 的注意力、logit lens、激活幅度。\\
+3 & checkpoint 和 dump & A：空 $z$ 回归和噪声底（做一次）。B：训练/评测重叠。D：锐度。F：正确性探针。G 和 H。\\
+\bottomrule
+\end{tabularx}
+\vspace{4pt}
+\begin{alertblock}{第 1 档的组统计量在 driver 上计算}
+\footnotesize 逐题统计量和按对错分组的统计量需要整个 batch，但在 verl 中每个数据并行 worker 只看到一个分片。
+\end{alertblock}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{每个探针点要 dump 什么}
+\small 保存原始量后，上面所有统计量都能离线计算，以后新增统计量也不必重新训练。
+\begin{columns}[T]
+\column{0.5\textwidth}
+\begin{block}{逐 token}
+\footnotesize
+token id、位置 $t$、回答编号 $i$\\
+$\log p_{i,t}(y^{(i)}_t)$，\ $\log q_{i,t}(y^{(i)}_t)$，\ $\norm{\nabla_{u_t}\mathcal L_t}$\\
+$p_{i,t}$ 和 $q_{i,t}$ 下概率最高的 20 个 token 及其概率
+\end{block}
+\begin{block}{逐回答}
+\footnotesize
+$c_i$，\ $L_i$，\ $\ans(y^{(i)})$，\ $\kappa^{\mathrm{tok}}_i$，\ $\kappa^{\mathrm{vote}}_i$
+\end{block}
+\column{0.46\textwidth}
+\begin{block}{选定的层、抽样的位置}
+\footnotesize
+$\phi^{(\ell)}_t$ 用 bf16 存：每 token 每层 $2\dm$ 字节。
+\end{block}
+\begin{exampleblock}{存储量估算}
+\footnotesize
+两个 top-20 列表，4 字节 id + 2 字节概率：每 token $2\times20\times6=240$ 字节。\\[2pt]
+隐藏状态，$\dm=1536$（Qwen2.5-1.5B）：每 token 每层约 3\,KB，$10^6$ 个 token 每层约 3\,GB。需要对位置抽样。
+\end{exampleblock}
+\end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{第一部分的优先级}
+\begin{enumerate}
+  \setlength\itemsep{6pt}
+  \item \textbf{A 全部做。}几乎免费；只要有一项不通过，其他统计量都没有意义。
+  \item \textbf{H 中的多种子和按算力对齐的横轴。}审稿人通常两者都会要求。
+  \item \textbf{G 的通用能力回退，以及 E 的错误答案置信度。}遗忘和过度自信是蒸馏最常见的两个副作用。
+  \item \textbf{B、C、E 中标为 \cFree{} 的行}放进第 1 档；\textbf{D 和 F} 放进第 2 档，在探针集上计算。
+\end{enumerate}
+\end{frame}
+
+\input{opsd-profiling-zh-part2}
+
+% =====================================================================
+\section{附录}
+
+\begin{frame}{缩写与术语（1/2）}
+\scriptsize
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.15}
+\begin{columns}[T]
+\column{0.49\textwidth}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l Y@{}}
+\toprule
+OPD & 在线蒸馏（on-policy distillation）：学生采样，老师给每个 token 打分\\
+OPSD & 在线自蒸馏：老师就是看到 $z$ 的学生自己的网络\\
+GRPO & 组相对策略优化\\
+RL & 强化学习\\
+EMA & 指数滑动平均\\
+ESS & 有效样本量\\
+AUROC & ROC 曲线下面积\\
+ECE & 期望校准误差\\
+CKA & 中心化核对齐\\
+MLP & Transformer 层中的前馈模块\\
+micro-batch & 每次反向传播处理的 batch 切片；梯度在切片间累加\\
+rollout & 用当前策略生成回答\\
+\bottomrule
+\end{tabularx}
+\column{0.49\textwidth}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l Y@{}}
+\toprule
+checkpoint; dump & 训练中保存的参数；存到磁盘上的原始中间量\\
+bf16 & 16 位浮点格式（bfloat16）\\
+NaN/Inf & 非数值 / 无穷大的浮点值\\
+FSDP & 全分片数据并行（训练引擎）\\
+vLLM & 用于 rollout 的推理引擎\\
+verl(-agent) & RL 训练框架（agent 版本）\\
+pass@1 & 单个样本答对的概率\\
+avg@16 & 用每题 16 个样本估计的 pass@1\\
+FlashAttention & 融合的注意力内核；与普通（“eager”）注意力不同，它不返回注意力权重\\
+\bottomrule
+\end{tabularx}
+\end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{缩写与术语（2/2）}
+\footnotesize
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l Y@{}}
+\toprule
+PMI & 点互信息；这里指第二部分的对数比 $\mathrm{PMI}_t$\\
+JSD; TV & Jensen--Shannon 散度；全变差距离\\
+PPO & 近端策略优化（裁剪范围 $\epsilon_{\mathrm{clip}}$ 的来源）\\
+LLM & 大语言模型\\
+CI & 置信区间\\
+ROUGE-L & 基于最长公共子序列的重合度\\
+self-BLEU & 每个回答相对于同组其他回答的 BLEU（$n$-gram 精度）的均值\\
+H1--H3; F0--F7 & 假设（II.0）和逐 token 特征（II.4）\\
+主干、多解、真不确定、灰区 & 分支标签的术语（spine、diversity、real-uncertain、gray），定义见 II.5\\
+方法名 & PW-OPSD、LGR、SEAD、vOPD、RLCSD、Dr.OPD、STOPD、Rethinking OPSD、AsyncOPD、f-OPD：见参考文献\\
+\bottomrule
+\end{tabularx}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{符号索引（1/3）：第一部分的记号页与设定页}
+\scriptsize
+\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.15}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{符号} & \textbf{所在页}\\ \midrule
+$x$, $z$, $\theta$, $\bar\theta$ & 设定\\
+$\mathcal V$, $a$, $G$ & 记号 1\\
+$y^{(i)}$, $L_i$, $h^{(i)}_t$ & 记号 1\\
+$p_{i,t}$, $q_{i,t}$, $d_{i,t}$ & 记号 1\\
+$y,L,h_t,p_t,q_t,d_t$ & 设定，记号 1\\
+$\theta$, $\theta_k$, $\theta_0$ & 记号 2\\
+$\Delta\theta_k$, $\bar\theta$ & 记号 2\\
+$\pit$, $\pitea$ & 设定，记号 1\\
+$\piold$ & 记号 2\\
+$T$, $u_t$, $e_a$ & 记号 2\\
+$\mathcal L_t$ & 训练损失\\
+\bottomrule
+\end{tabular}
+\column{0.32\textwidth}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{符号} & \textbf{所在页}\\ \midrule
+$\log$, $\exp$, $\mathbb R$ & 记号 3\\
+$\E$, $\Pr$ & 记号 3\\
+$\nabla_\theta$, $\nabla^2_\theta$, $\sg$ & 记号 3\\
+$\KL$, $\Ind$, $\operatorname{sign}$ & 记号 3\\
+$\cos$ & 记号 3\\
+$\norm{\cdot}$, $\norm{\cdot}_F$, $\norm{\cdot}_\infty$ & 记号 4\\
+$\operatorname{tr}$, $\abs{\cdot}$ & 记号 4\\
+$\operatorname{mean}$, $\operatorname{std}$, $\pct$ & 记号 4\\
+$\AUROC$, $\rho_{\mathrm S}$ & 记号 4\\
+\bottomrule
+\end{tabular}
+\column{0.32\textwidth}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{符号} & \textbf{所在页}\\ \midrule
+$c_i$, $R_i$ & 记号 5\\
+$\ans$, $\mathcal S_i$ & 记号 5\\
+$\mathcal P$, $N$ & 记号 5\\
+$\mathcal D_{\mathrm{train}}$, $\mathcal D_{\mathrm{held}}$ & 记号 5\\
+$\acc(\mathcal D)$ & 记号 5\\
+$\ell$, $N_L$, $\dm$ & 记号 5\\
+$\phi^{(\ell)}_t$, $\Phi_\ell$ & 记号 5\\
+\bottomrule
+\end{tabular}
+\end{columns}
+\vspace{4pt}
+\gnote{导读中的符号在当页给出直观含义，正式定义以本索引所列页为准。}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{符号索引（2/3）：第一部分，在首次使用处定义}
+\scriptsize
+\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.15}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{符号} & \textbf{所在页}\\ \midrule
+$\nu$, $q^{(1)}_t$, $q^{(2)}_t$ & A (1/2)\\
+$L_{\max}$ & A (1/2)\\
+$\beta$ & A (2/2)\\
+$a_j$, $n$, $\mathrm{Gini}$, $\mathcal T$ & B (1/2)\\
+$\bar a(x)$, $\epsilon_{\mathrm{low}}$ & B (1/2)\\
+$\acc_k(x)$, $v_k(x)$ & B (2/2)\\
+$\bar a_k(x)$ & B (2/2)\\
+$\hat g$, $g^{\mathrm{full}}$ & C (1/2)\\
+$\hat g_i$, $\bar g$ & C (1/2)\\
+$\bar d_i$, $\hat A_i$, $\mathcal I$ & C (2/2)\\
+$r_t$, $\mathrm{ESS}$ & C (2/2)\\
+\bottomrule
+\end{tabular}
+\column{0.32\textwidth}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{符号} & \textbf{所在页}\\ \midrule
+$g$, $\Sigma$, $b$, $B$ & D (1/3)\\
+$g_b$, $g_B$, $B_{\mathrm{noise}}$ & D (1/3)\\
+$M$, $g_m$, $\bar g_M$ & D (2/3)\\
+$\lambda_{\max}$, $\mathcal L_{\mathcal P}$ & D (3/3)\\
+$\sigma_j$, $r$, $\bar\sigma_j$ & D (3/3)\\
+$\operatorname{erank}$, $\delta$ & D (3/3)\\
+$\kappa^{\mathrm{tok}}_i$, $\kappa^{\mathrm{vote}}_i$ & E (1/2)\\
+$\mathrm{ECE}$, $N_{\mathrm{bin}}$, $\mathcal B_m$ & E (1/2)\\
+$\mathrm{Brier}$ & E (1/2)\\
+$U$, $\mathcal C$, $\hat p_{\mathcal C}$ & E (2/2)\\
+$\mathrm{SE}$, $c^{\mathrm{maj}}$ & E (2/2)\\
+\bottomrule
+\end{tabular}
+\column{0.32\textwidth}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{符号} & \textbf{所在页}\\ \midrule
+$\mathrm{CKA}$, $X$, $Y$ & F (1/2)\\
+$\mathcal Z$, $\mathcal R$, $N_h$ & F (2/2)\\
+$\omega^{(\ell,j)}_{t,s}$, $\alpha_\ell$ & F (2/2)\\
+$W_U$, $\operatorname{Norm}$, $\ell^\star_t$ & F (2/2)\\
+$J$, $\acc_j$ & G (1/2)\\
+$\eta$ & G (2/2)\\
+$n_{01}$, $n_{10}$, $\chi^2$ & H (1/2)\\
+$\hat m^{(1)}$, $\hat m^{(2)}$ & H (2/2)\\
+\bottomrule
+\end{tabular}
+\end{columns}
+\vspace{4pt}
+\gnote{求和下标（$j$、$j'$、$m$、$s$、$t$、$\ell'$）由所在的求和或集合绑定。计数 $n$ 在用到它的每一页（B、C、E、F）上重新定义。}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{符号索引（3/3）：第二部分}
+\scriptsize
+\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.15}
+\begin{columns}[T]
+\column{0.32\textwidth}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{符号} & \textbf{所在页}\\ \midrule
+$q^0_t$, $\mathrm{PMI}_t$ & II 记号 1\\
+$\Delta^{\mathrm{snap}}_t$ & II 记号 1\\
+$S_t$ & II 记号 2\\
+$\pi(h_t\mid x)$ & II 记号 2\\
+$\mathcal H$, $\mathrm p_1,\mathrm p_5,\dots$ & II 记号 3\\
+$\operatorname{Var}$, $\operatorname{Cov}$, $\operatorname{corr}$ & II 记号 3\\
+$T_m$, $\operatorname{rank}_p$ & II 记号 3\\
+$\hat y_t$, $\mathrm{eos}$, $\mathcal W$ & II 记号 3\\
+$z^+$, $z^-$, $\pi(y\mid x)$ & II 记号 3\\
+\bottomrule
+\end{tabular}
+\column{0.32\textwidth}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{符号} & \textbf{所在页}\\ \midrule
+$\epsilon_{\mathrm{clip}}$, $\pi_{\mathrm{inf}}$ & II.1 健康度\\
+$K$, $n_{\mathrm{smp}}$, $n_{\mathrm{cor}}$ & II.1 任务（1/2）\\
+$\acc_{\theta_0}(x)$ & II.1 任务（1/2）\\
+$\mu_d$, $\sigma_d$ & II.2（1/2）\\
+$m_t$, $\mathrm{JSD}$, $\mathrm{TV}$ & II.3（1/2）\\
+F0--F7 & II.4 特征\\
+\bottomrule
+\end{tabular}
+\column{0.32\textwidth}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{符号} & \textbf{所在页}\\ \midrule
+$\oplus$, $\hat V$, $n_{\mathrm{roll}}$ & II.5 标签\\
+$\Delta_t$ & II.5 标签\\
+$q^{(k)}_t$ & II.7 动态\\
+$g_{\mathrm D}$, $g_{\mathrm{RL}}$ & II.7 动态\\
+$\theta^{(\ell)}$, $W$, $\Delta W$, $\delta_W$ & II.7 动态\\
+\bottomrule
+\end{tabular}
+\end{columns}
+\end{frame}
+
+
+% ---------------------------------------------------------------------
+\begin{frame}[allowframebreaks]{参考文献}
+\footnotesize
+\begin{itemize}
+  \item K.~Lu and Thinking Machines Lab. On-Policy Distillation. \emph{Connectionism} blog, 2025.
+  \item R.~Agarwal et al. On-Policy Distillation of Language Models: Learning from Self-Generated Mistakes (GKD). ICLR 2024.
+  \item Y.~Gu et al. MiniLLM: Knowledge Distillation of Large Language Models. ICLR 2024.
+  \item Self-Distilled Reasoner: On-Policy Self-Distillation for Large Language Models. arXiv:2601.18734, 2026.
+  \item AsyncOPD: How Stale Can On-Policy Distillation Be? arXiv:2606.24143, 2026.
+  \item f-OPD: Stabilizing Long-Horizon On-Policy Distillation with Freshness-Aware Control. arXiv:2605.17862, 2026.
+  \item When Are Teacher Tokens Reliable? Position-Weighted On-Policy Self-Distillation for Reasoning (PW-OPSD). arXiv:2605.21606, 2026.
+  \item Rethinking On-Policy Self-Distillation for Thinking Models. arXiv:2607.05184, 2026.
+  \item RLCSD: Reinforcement Learning with Contrastive On-Policy Self-Distillation. arXiv:2606.11709, 2026.
+  \item SEAD: Competence-Aware On-Policy Distillation via Entropy-Guided Supervision. arXiv:2606.28562, 2026.
+  \item KL for a KL: On-Policy Distillation with Control Variate Baseline (vOPD). arXiv:2605.07865, 2026.
+  \item Your Teacher Can't Help You Here: Combating Supervision Fidelity Decay in On-Policy Distillation (LGR). arXiv:2605.30833, 2026.
+  \item Dr.\ OPD: Learning What to Follow for Optimal On-Policy Distillation of Large Language Models. arXiv:2609.38025, 2026.
+  \item Does On-Policy Distillation Need to Complete Every Rollout? (STOPD). Code: github.com/YouAreSpecialToMe/STOPD, 2026.
+  \item J.~Schulman et al. Proximal Policy Optimization Algorithms. arXiv:1707.06347, 2017.
+  \item M.~Chen et al. Evaluating Large Language Models Trained on Code (pass@$K$ estimator). arXiv:2107.03374, 2021.
+  \item Y.~Zhu et al. Texygen: A Benchmarking Platform for Text Generation Models (self-BLEU). SIGIR 2018.
+  \item C.-Y.~Lin. ROUGE: A Package for Automatic Evaluation of Summaries. ACL Workshop, 2004.
+  \item Z.~Shao et al. DeepSeekMath (GRPO). arXiv:2402.03300, 2024.
+  \item M.~Toneva et al. An Empirical Study of Example Forgetting during Deep Neural Network Learning. ICLR 2019.
+  \item S.~McCandlish, J.~Kaplan, D.~Amodei et al. An Empirical Model of Large-Batch Training. arXiv:1812.06162, 2018.
+  \item Z.~Yao et al. PyHessian: Neural Networks Through the Lens of the Hessian. IEEE BigData 2020.
+  \item O.~Roy, M.~Vetterli. The Effective Rank: A Measure of Effective Dimensionality. EUSIPCO 2007.
+  \item S.~Dohare et al. Loss of Plasticity in Deep Continual Learning. \emph{Nature}, 2024.
+  \item C.~Guo et al. On Calibration of Modern Neural Networks. ICML 2017.
+  \item Z.~Kang, X.~Zhao, D.~Song. Scalable Best-of-N Selection for Large Language Models via Self-Certainty. arXiv:2502.18581, 2025.
+  \item L.~Kuhn, Y.~Gal, S.~Farquhar. Semantic Uncertainty: Linguistic Invariances for Uncertainty Estimation in Natural Language Generation. ICLR 2023.
+  \item S.~Kornblith et al. Similarity of Neural Network Representations Revisited. ICML 2019.
+  \item nostalgebraist. Interpreting GPT: the Logit Lens. LessWrong, 2020.
+  \item M.~Sun, X.~Chen, J.~Z.~Kolter, Z.~Liu. Massive Activations in Large Language Models. COLM 2024.
+  \item R.~Agarwal et al. Deep Reinforcement Learning at the Edge of the Statistical Precipice. NeurIPS 2021.
+  \item Q.~McNemar. Note on the Sampling Error of the Difference between Correlated Proportions or Percentages. \emph{Psychometrika}, 1947.
+  \item Benchmarks: MMLU-Pro (Wang et al.\ 2024), GPQA (Rein et al.\ 2023), IFEval (Zhou et al.\ 2023), HumanEval (Chen et al.\ 2021), SimpleQA (Wei et al.\ 2024).
+\end{itemize}
+\end{frame}
+
+\end{document}

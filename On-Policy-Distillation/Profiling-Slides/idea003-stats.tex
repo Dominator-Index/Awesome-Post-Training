@@ -1,0 +1,628 @@
+% !TEX program = xelatex
+% Build: latexmk -xelatex idea003-stats.tex
+% idea 003（PMI 分解与前缀兼容度）相关统计量的精简版 slides
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usetheme[progressbar=frametitle,numbering=fraction,block=fill]{metropolis}
+
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs,array,tabularx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+% ---------- 中文字体 ----------
+\usepackage{xeCJK}
+\setCJKsansfont{PingFang SC}[UprightFont={* Regular},BoldFont={* Semibold}]
+\setCJKmainfont{Songti SC}
+
+% ---------- colors ----------
+\definecolor{ink}{HTML}{1F2A37}
+\definecolor{accent}{HTML}{C2410C}
+\definecolor{cBlue}{HTML}{2563EB}
+\definecolor{cGreen}{HTML}{15803D}
+\definecolor{cPurple}{HTML}{7C3AED}
+\definecolor{cRed}{HTML}{B91C1C}
+\definecolor{cGray}{HTML}{6B7280}
+\definecolor{cTeal}{HTML}{0F766E}
+\definecolor{soft}{HTML}{F3F4F6}
+
+\setbeamercolor{frametitle}{bg=ink,fg=white}
+\setbeamercolor{progress bar}{fg=accent,bg=ink!30}
+\setbeamercolor{title separator}{fg=accent}
+\setbeamercolor{alerted text}{fg=accent}
+\setbeamercolor{normal text}{fg=ink,bg=white}
+\setbeamercolor{block title}{bg=ink!12,fg=ink}
+\setbeamercolor{block body}{bg=soft}
+\setbeamercolor{block title alerted}{bg=accent!18,fg=accent!80!black}
+\setbeamercolor{block body alerted}{bg=accent!5}
+\setbeamercolor{block title example}{bg=cGreen!15,fg=cGreen!80!black}
+\setbeamercolor{block body example}{bg=cGreen!4}
+\setbeamertemplate{itemize item}{\color{accent}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{cGray}--}
+\metroset{sectionpage=progressbar}
+
+% ---------- notation ----------
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\pit}{\pi_\theta}
+\newcommand{\pitea}{\pi_{\bar\theta}}
+\newcommand{\KL}{D_{\mathrm{KL}}}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+\newcommand{\AUROC}{\operatorname{AUROC}}
+\newcommand{\PMI}{\mathrm{PMI}}
+\newcommand{\snap}{\Delta^{\mathrm{snap}}}
+\newcommand{\Vh}{\hat V}
+\newcommand{\hl}[1]{{\color{accent}#1}}
+\newcommand{\gnote}[1]{{\scriptsize\color{cGray}#1}}
+
+% ---------- cost tags ----------
+\newcommand{\ctag}[2]{\tikz[baseline=(T.base)]\node[fill=#1!14,text=#1!75!black,
+  rounded corners=1.5pt,inner xsep=2.5pt,inner ysep=1.2pt,font=\scriptsize\bfseries](T){#2};}
+\newcommand{\cFree}{\ctag{cGreen}{免费}}
+\newcommand{\cFwd}{\ctag{cBlue}{+前向}}
+\newcommand{\cLog}{\ctag{cPurple}{全词表}}
+\newcommand{\cEval}{\ctag{cGray}{评测}}
+\newcommand{\cOff}{\ctag{ink}{离线}}
+\newcommand{\cRun}{\ctag{cRed}{+训练}}
+\newcommand{\cBr}{\ctag{cTeal}{续写}}
+
+% ---------- tables ----------
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newenvironment{stattable}[1][2.1cm]{%
+  \scriptsize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.22}%
+  \tabularx{\linewidth}{@{}>{\raggedright\arraybackslash\bfseries}p{#1} Y
+    >{\centering\arraybackslash}p{1.05cm} >{\raggedright\arraybackslash}p{2.9cm}@{}}
+  \toprule
+  \normalfont\bfseries 统计量 & \bfseries 怎么算 & \bfseries 成本 & \bfseries 回答的问题\\
+  \midrule}
+ {\bottomrule\endtabularx}
+
+\newenvironment{symtable}{%
+  \footnotesize\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.06}%
+  \tabularx{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.40\linewidth} Y@{}}
+  \toprule \textbf{符号} & \textbf{含义}\\ \midrule}
+ {\bottomrule\endtabularx}
+
+\newtcolorbox{eqbox}[1][]{enhanced,colback=soft,colframe=ink!40,boxrule=0.5pt,
+  arc=2pt,left=4pt,right=4pt,top=2pt,bottom=2pt,#1}
+
+\title{idea 003 的统计量}
+\subtitle{PMI 分解与前缀兼容度：测什么、怎么测、看到什么说明什么}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+% =====================================================================
+\begin{frame}{目录}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{enumerate}
+  \setlength\itemsep{2pt}
+  \item[0.] 一页故事
+  \item[1.] 记号
+  \item[2.] 统计量地图
+  \item[3.] 第 0 步：恒等式检查
+  \item[4.] 逐 token 特征 F0--F7
+  \item[5.] 检验 H2：分支续写
+\end{enumerate}
+\column{0.48\textwidth}
+\begin{enumerate}
+  \setlength\itemsep{2pt}
+  \item[6.] 检验 H3：反思词的 PMI
+  \item[7.] 检验 H1：特权信息的类型
+  \item[8.] 训练中监控
+  \item[9.] 混杂、判据与执行计划
+  \item[] 附录：缩写、符号索引、参考文献
+\end{enumerate}
+\end{columns}
+\vspace{10pt}
+\gnote{每个符号都在使用前定义。完整的通用统计量见 main-zh.pdf；这份只保留与 idea 003 直接相关的部分。}
+\end{frame}
+
+% =====================================================================
+\section{0.\quad 一页故事}
+
+\begin{frame}{一页故事：四个现象，可能是同一个量}
+\begin{columns}[T]
+\column{0.49\textwidth}
+\begin{block}{已有论文里的四个现象}
+\footnotesize
+\begin{enumerate}
+  \setlength\itemsep{2pt}
+  \item \textbf{反思词消失}：thinking 模型少写 wait、but；给完整解法比只给答案退化更多（Rethinking OPSD）。
+  \item \textbf{风格漂移}：学生学到的是“看过参考的写法”（RLCSD）。
+  \item \textbf{老师前面不可靠、后面可靠}（PW-OPSD）。
+  \item \textbf{前缀越长，老师越难纠正}（LGR），与 3 相反。
+\end{enumerate}
+\end{block}
+\column{0.47\textwidth}
+\begin{block}{idea 003 的解释}
+\footnotesize
+\begin{itemize}
+  \setlength\itemsep{2pt}
+  \item 自蒸馏的打分，主要成分是\textbf{老师看了答案之后，对这个词的看法变了多少}，即点互信息（PMI）。
+  \item 把它沿前缀累加，得到\textbf{前缀兼容度}：学生目前写的这段和答案对不对路。
+\end{itemize}
+\end{block}
+\end{columns}
+\vspace{4pt}
+\small
+\textbf{三个假设}：\textbf{H1} 答案是学生推不出来的、任务又需要试错时，OPSD 有害。
+\textbf{H2} 老师可不可靠看兼容度，不看位置。
+\textbf{H3} 反思词只在对路的前缀上被压制。\par\vspace{2pt}
+\gnote{全部是待检验的假设，尚无实验。最接近的已有工作是 TrOPD 和 Many Faces，只做了定性讨论。}
+\end{frame}
+
+% =====================================================================
+\section{1.\quad 记号}
+
+\begin{frame}{记号（1/4）：对象与分布}
+\begin{symtable}
+$x$ & 题目\\
+$z$ & 特权信息：最终答案或完整参考解法，只给老师看\\
+$y=(y_1,\dots,y_L)$;\ \ $L$ & 学生的一条回答；它的 token 数\\
+$h_t=(y_1,\dots,y_{t-1})$;\ \ $t/L$ & 位置 $t$ 之前的前缀；相对位置\\
+$\theta$;\ \ $\theta_0$;\ \ $\bar\theta$ & 学生的当前参数；初始参数；老师参数（同步时等于采样时刻的 $\theta$，也可以冻结为 $\theta_0$ 或取 EMA）\\
+$\pit(\cdot\mid\dots)$,\ \ $\pitea(\cdot\mid\dots)$ & 参数为 $\theta$ 或 $\bar\theta$ 的同一个网络，在竖线右边的上下文下对下一个 token 的分布\\
+$p_t=\pit(\cdot\mid x,h_t)$;\ \ $q_t=\pitea(\cdot\mid x,z,h_t)$ & 学生分布；老师分布（看 $z$）\\
+$q^0_t=\pitea(\cdot\mid x,h_t)$ & 老师分布（不看 $z$，与学生用同一个 prompt 模板）\\
+$d_t=\log q_t(y_t)-\log p_t(y_t)$ & OPSD 的逐 token 训练信号；$\log$ 为自然对数\\
+$c\in\{0,1\}$ & 回答是否正确（1 为正确）\\
+\end{symtable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{记号（2/4）：把训练信号拆成两半}
+\begin{eqbox}
+\[
+d_t=\underbrace{\log q_t(y_t)-\log q^0_t(y_t)}_{\PMI_t}
++\underbrace{\log q^0_t(y_t)-\log p_t(y_t)}_{\snap_t}
+\]
+\end{eqbox}
+\begin{itemize}
+  \setlength\itemsep{4pt}
+  \item $\PMI_t$（得名于点互信息）：看到 $z$ 让老师对 $y_t$ 的 log 概率提高了多少，即\textbf{答案对这个词的表态}。
+  \item $\snap_t$（快照差）：老师参数与学生当前参数的差别，和 $z$ 无关。
+  \item 老师同步时，一步中第一个 mini-batch 上 $\snap_t=0$，所以 $d_t=\PMI_t$；之后 $\snap_t=-\log r_t$，其中 $r_t=p_t(y_t)/q^0_t(y_t)$ 就是 PPO 的重要性比率，通常接近 1。
+  \item 老师冻结或取 EMA 时，$\snap_t$ 会随训练变大，作用相当于把学生拉回老师参数。
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{记号（3/4）：前缀兼容度}
+对 $\pi\in\{\pit,\pitea\}$，前缀的概率为 $\pi(h_t\mid x)=\prod_{u=1}^{t-1}\pi(y_u\mid x,h_u)$，上下文中带 $z$ 时同理。由链式法则：
+\begin{eqbox}
+\[
+S_t=\sum_{u=1}^{t-1}\PMI_u=\log\frac{\pitea(h_t\mid x,z)}{\pitea(h_t\mid x)},\qquad S_1=0
+\]
+\end{eqbox}
+\begin{itemize}
+  \setlength\itemsep{3pt}
+  \item $S_t>0$：看过答案时这段前缀更可能出现，学生沿着 $z$ 的路线走。
+  \item $S_t<0$：前缀已经离开这条路线，例如换了方法或出了错。
+  \item $S_t\approx0$：还看不出来，多在开头。
+  \item 令 $h_{L+1}=y$：$\pi(y\mid x)$ 是整段回答的概率，$S_{L+1}$ 是整段回答的兼容度。
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{记号（4/4）：其他符号与统计工具}
+\begin{symtable}
+$\mathcal V$;\ \ $a\in\mathcal V$ & 词表；一个 token\\
+$\hat y_t=\arg\max_a q_t(a)$;\ \ $T_m(q)$ & 老师在位置 $t$ 最想写的 token；分布 $q$ 下概率最高的 $m$ 个 token\\
+$\mathcal H(q)=-\sum_a q(a)\log q(a)$ & 分布 $q$ 的熵\\
+$\KL(p\Vert q)=\sum_a p(a)\log\frac{p(a)}{q(a)}$ & KL 散度\\
+$\mathcal W$ & 反思词表：wait、but、hmm、let me check、actually 等（预先固定）\\
+$z^+$;\ \ $z^-$ & 正确参考（$z^+=z$）；同一模板下的错误参考\\
+$\E$, $\Pr$;\ \ $\operatorname{Var}$, $\operatorname{Cov}$ & 期望、概率；方差、协方差\\
+$\AUROC(s\to c)$ & 随机取一正一负两个样本，正例分数 $s$ 更高的概率；0.5 等于瞎猜\\
+$\rho_{\mathrm S}$;\ \ $\operatorname{corr}$ & Spearman 秩相关；Pearson 相关\\
+$\mathrm p_{\alpha}$ & 第 $\alpha$ 百分位数，例如 $\mathrm p_{50}$ 是中位数\\
+\end{symtable}
+\end{frame}
+
+% =====================================================================
+\section{2.\quad 统计量地图}
+
+\begin{frame}{统计量地图：数据从哪来，回答哪个假设}
+\centering
+\begin{tikzpicture}[
+  sn/.style={draw=ink!50,rounded corners=3pt,fill=soft,align=center,font=\scriptsize,
+    text width=3.3cm,minimum height=0.95cm},
+  mn/.style={draw=accent!60,rounded corners=3pt,fill=accent!7,align=center,font=\scriptsize,
+    text width=3.0cm,minimum height=0.95cm},
+  res/.style={draw=cBlue!50,rounded corners=3pt,fill=cBlue!6,align=center,font=\scriptsize,
+    text width=3.6cm,minimum height=0.72cm},
+  >={Stealth[length=2mm]}]
+  \node[sn] (s1) at (0,1.5) {训练中已有：老师看 $z$ 的\\ $\log q_t(y_t)$\quad{\color{cGreen}\bfseries 免费}};
+  \node[sn] (s2) at (0,0) {多一次前向：老师不看 $z$ 的\\ $\log q^0_t(y_t)$\quad{\color{cBlue}\bfseries +前向}};
+  \node[sn] (s3) at (0,-1.6) {分支续写：从强制前缀出发\\ 让学生续写，统计答对率\quad{\color{cTeal}\bfseries 续写}};
+  \node[mn] (m1) at (4.6,0.75) {\textbf{逐 token 特征}\\ $\PMI_t$、$S_t$ 等（第 4 节）};
+  \node[mn] (m2) at (4.6,-1.6) {\textbf{可靠性标签}\\ 跟着老师走到底有没有用};
+  \node[res] (o1) at (9.4,1.95) {反思词的 $\PMI_t$ 按 $S_t$ 分组\\ $\Rightarrow$ \textbf{H3}（第 6 节）};
+  \node[res] (o2) at (9.4,0.95) {按 $z$ 的类型比较\\ $\Rightarrow$ \textbf{H1}（第 7 节）};
+  \node[res] (o3) at (9.4,-0.05) {训练中监控（第 8 节）};
+  \node[res] (o4) at (9.4,-1.6) {特征能否预测标签\\ $\Rightarrow$ \textbf{H2}（第 5 节）};
+  \draw[->] (s1.east) -- (m1.west);
+  \draw[->] (s2.east) -- (m1.west);
+  \draw[->] (s3) -- (m2);
+  \draw[->] (m1.east) -- (o1.west);
+  \draw[->] (m1.east) -- (o2.west);
+  \draw[->] (m1.east) -- (o3.west);
+  \draw[->] (m1.east) -- (o4.west);
+  \draw[->] (m2) -- (o4);
+  \node[font=\scriptsize\bfseries,color=cRed,align=center] at (0,2.55) {先做：恒等式检查（第 3 节）};
+\end{tikzpicture}
+\par\vspace{6pt}
+\raggedright\scriptsize
+\textbf{成本标签}：\cFree{} 训练中已经算好　\cFwd{} 多一次前向　\cLog{} 需要整个词表上的概率　\cBr{} 学生续写　\cOff{} 在保存的数据上离线算　\cEval{} 评测　\cRun{} 额外训练
+\end{frame}
+
+% =====================================================================
+\section{3.\quad 第 0 步：恒等式检查}
+
+\begin{frame}{第 0 步（E0）：先确认 PMI 算对了}
+\small
+在约 20 个回答上做以下检查。任何一项不通过，后面所有的 PMI 都可能只是模板或分词错误。
+\begin{enumerate}
+  \setlength\itemsep{4pt}
+  \item \textbf{求和恒等式。}两种 prompt 下整段回答的 log 概率单独计算，检查
+  \[
+  \sum_{t=1}^{L}\PMI_t=\log\pitea(y\mid x,z)-\log\pitea(y\mid x)
+  \]
+  每 token 的平均误差应小于 $10^{-3}$。
+  \item \textbf{token 相同。}回答的 token id 在两种模板下完全相同，不能各自重新分词。
+  \item \textbf{快照差为 0。}老师同步时，一步中第一个 mini-batch 上的 $\snap_t$ 应恰好为 0，即训练日志里的 $d_t$ 等于离线重算的 $\PMI_t$。不为 0 说明两种模板除了 $z$ 之外还有别的差异。
+\end{enumerate}
+\gnote{成本：\cFwd{} 一次。}
+\end{frame}
+
+% =====================================================================
+\section{4.\quad 逐 token 特征 F0--F7}
+
+\begin{frame}{逐 token 特征：F0--F7}
+\scriptsize
+\setlength{\tabcolsep}{3.5pt}\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l >{\raggedright\arraybackslash}p{2.1cm} Y >{\raggedright\arraybackslash}p{3.1cm} >{\centering\arraybackslash}p{1.5cm}@{}}
+\toprule
+编号 & 特征 & 定义 & 直观含义 & 成本\\
+\midrule
+F0 & 相对位置（基线） & $(t-0.5)/L$ & 写到哪里了 & \cFree\\
+F1 & 老师熵（基线） & 把 $q_t$ 限制在 $T_{16}(q_t)$ 上、重新归一化后的 $\mathcal H$（PW-OPSD 口径） & 老师自己有多犹豫 & \cLog\\
+F2 & PMI & $\PMI_t$ & 答案对这个词的表态 & \cFree{} / \cFwd\\
+F3 & 累计 PMI & $S_t$ & 前缀和答案对不对路 & 同 F2\\
+F4 & 平均累计 PMI & $S_t/(t-1)$，$t\ge2$ & 去掉长度累积后的兼容度 & 同 F2\\
+F5 & 局部特权散度 & 在 $T_{64}(q_t)\cup T_{64}(q^0_t)$ 上、其余 token 合为一个桶时的 $\KL(q_t\Vert q^0_t)$ & 答案在这个位置改变了老师多少 & \cLog\\
+F6 & 候选 PMI & 对 $a\in T_3(q_t)$ 算 $\log q_t(a)-\log q^0_t(a)$，取最大值和均值 & 老师的候选词有多依赖答案 & \cLog\\
+F7 & 对比累计 PMI & $\sum_{u=1}^{t-1}\big[\log\pitea(y_u\mid x,z^+,h_u)-\log\pitea(y_u\mid x,z^-,h_u)\big]$ & 扣掉“看过某个参考”的风格后的兼容度 & \cFwd\\
+\bottomrule
+\end{tabularx}
+\vspace{3pt}
+\gnote{老师同步时 F2--F4 免费，否则需多一次不带 $z$ 的前向。}
+\end{frame}
+
+% =====================================================================
+\section{5.\quad 检验 H2：分支续写}
+
+\begin{frame}{分支续写标签：在这个位置，跟着老师走有没有用？}
+\small
+\textbf{主干（spine）}：一条固定的学生回答。$h\oplus a$：前缀 $h$ 后接 token $a$。$\Vh(h)$：从 $h$ 出发、学生\textbf{不看} $z$ 续写 $n_{\mathrm{roll}}$ 次，答对的比例。
+\begin{columns}[T]
+\column{0.49\textwidth}
+\begin{block}{E1：做对的主干（沿用 PW-OPSD 协议）}
+\footnotesize
+每题最多取 F1 最高的 5 个位置；对每个 $a\in T_3(q_t)$ 强制续写；$n_{\mathrm{roll}}=6$。\\
+\textbf{多解}（diversity）：至少两个候选 $\Vh(h_t\oplus a)\ge0.75$，选哪个都能做对。\\
+\textbf{真不确定}（real-uncertain，正例）：所有候选及其均值都低于 0.40。\\
+其余为\textbf{灰区}，不参与 AUROC。
+\end{block}
+\column{0.47\textwidth}
+\begin{block}{E2：做错的主干（帮助度）}
+\footnotesize
+每条主干在 $t/L$ 上均匀取 5 个位置；$n_{\mathrm{roll}}=8$：
+\[
+\Delta_t=\Vh(h_t\oplus\hat y_t)-\Vh(h_t\oplus y_t)
+\]
+$\Delta_t>0$：老师最想写的词对看不到 $z$ 的学生有帮助。$\hat y_t=y_t$ 时记 $\Delta_t=0$，并报告这类位置的比例。
+\end{block}
+\end{columns}
+\vspace{2pt}
+\gnote{测试时学生看不到 $z$，所以续写也不给。成本 \cBr：E1 约 题数$\times90$ 次续写，E2 约 题数$\times80$ 次。}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{H2 的统计量（1/2）：E1，做对的主干}
+\begin{stattable}
+锚点复现 & F0 的 AUROC，与 PW-OPSD 的 0.83（题目级 bootstrap CI $[0.66,0.95]$，8 个正例）对照。换模型时以同一批数据上重测的值为基线。 & \cBr & 标签口径和 PW-OPSD 一致吗？\\
+单特征 AUROC & F0--F7 各自区分真不确定与多解的 AUROC；先在每道题内减去均值；题目级 bootstrap 95\% CI（2000 次）。 & \cBr & 哪个特征最能预测老师可不可靠？\\
+增量价值 & 按题目分 5 折的逻辑回归：F0 加一个特征的留出 AUROC，减去只用 F0 的；附 bootstrap CI。 & \cOff & 兼容度有没有位置之外的信息？\\
+按位置分层 & 把 $t/L$ 三等分，在每一段内算 F3、F5 的 AUROC。 & \cOff & 兼容度是不是只是位置的替身？\\
+正例数量 & 真不确定位置的个数（目标至少 40）；灰区比例。 & \cFree & 样本够不够下结论？\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{H2 的统计量（2/2）：E2，做错的主干}
+\begin{stattable}
+帮助度与兼容度 & $\rho_{\mathrm S}(\Delta_t,S_t)$；控制 $t/L$ 后的偏相关（两者分别对 $t/L$ 回归后，残差之间的相关）。 & \cBr & 走偏的前缀上老师是否更失真？（LGR 的方向）\\
+按 $S_t$ 的符号分组 & $S_t\ge0$ 与 $S_t<0$ 时 $\Delta_t$ 的均值及 CI。 & \cBr & 同上，更直观。\\
+老师无异议的比例 & $\hat y_t=y_t$ 的位置比例。 & \cFree & 多少位置老师本来就同意学生？\\
+救回率 & 在 $\Vh(h_t)\le0.1$ 的位置上，$\Vh(h_t\oplus\hat y_t)$ 的均值。 & \cBr & 学生快要失败时，老师能救回来吗？\\
+背书率 & 出错的一步：$\Vh(h_{t+1})\le\Vh(h_t)-0.3$。其中 $\PMI_t>0$ 的比例。 & \cBr & 老师会不会给出错的一步加分？\\
+\end{stattable}
+\vspace{2pt}
+\gnote{救回率和背书率的阈值（0.1、0.3）是这份 slides 补充的，可以调。$\Vh(h_t)$ 需要从 $h_t$ 额外续写。做对与做错的主干选位置的规则不同，结果分开报告。}
+\end{frame}
+
+% =====================================================================
+\section{6.\quad 检验 H3：反思词的 PMI}
+
+\begin{frame}{H3 的统计量（E3）：不需要续写，最便宜}
+\small 知道答案的人不需要检查，所以在对路的前缀上 $\PMI_t(\text{wait})<0$；但学生走偏时，知道答案的人会要求回头看。\par\vspace{2pt}
+\begin{stattable}
+按对错分 & $y_t\in\mathcal W$ 处 $\PMI_t$ 的均值与分布：做对 vs.\ 做错的回答。 & \cFree\newline\cFwd & 反思词在两类回答里待遇一样吗？\\
+按兼容度分 & 做错的回答内部：$S_t\ge0$ 段与 $S_t<0$ 段的比较；差值的题目级 bootstrap CI。 & \cFree\newline\cFwd & 压制是否取决于前缀状态？\\
+对照组 & 与反思词位置分布匹配、但不在 $\mathcal W$ 中的随机 token，同样分组。 & \cFree\newline\cFwd & 是不是走偏段所有词的 PMI 都偏高？\\
+反思词频率 & 每 1000 token 中 $\mathcal W$ 里的词出现的次数，训练前后对比。 & \cFree & 压制有多严重（fork suppression）？\\
+\end{stattable}
+\vspace{2pt}
+\gnote{老师同步时用 \cFree，否则用 \cFwd。}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{H3：预测长什么样，以及已有证据}
+\begin{columns}[c]
+\column{0.50\textwidth}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \draw[cGray] (0,0) -- (5.2,0) node[right,font=\scriptsize]{$\PMI=0$};
+  \fill[cRed!70] (0.4,0) rectangle (1.4,-1.9);
+  \fill[cGreen!70] (2.1,0) rectangle (3.1,0.35);
+  \fill[cGray!60] (3.8,0) rectangle (4.8,-0.12);
+  \node[font=\scriptsize,align=center,below] at (0.9,-1.95) {反思词\\ $S_t\ge0$};
+  \node[font=\scriptsize,align=center,above] at (2.6,0.4) {反思词\\ $S_t<0$};
+  \node[font=\scriptsize,align=center,below] at (4.3,-0.2) {对照组};
+  \node[font=\scriptsize\bfseries,color=accent] at (2.6,1.4) {示意：H3 预测的方向，不是数据};
+\end{tikzpicture}
+\column{0.47\textwidth}
+\small
+\begin{block}{已有证据（Rethinking OPSD 图 5）}
+\footnotesize
+固定同一条学生轨迹，只切换老师看不看参考，对数比 $\log q-\log p$ 的变化：\\
+But：$+0.95\to-1.96$；\quad wait：$+0.37\to-4.97$。\\
+两者之差就是 PMI：wait 约 $-5.3$。
+\end{block}
+\footnotesize
+\textbf{怎么读}：红柱明显低于绿柱且 CI 不重叠 $\Rightarrow$ 支持 H3，值得按 $S_t$ 屏蔽对反思词的负信号。两柱无差别 $\Rightarrow$ 压制与前缀状态无关。
+\end{columns}
+\end{frame}
+
+% =====================================================================
+\section{7.\quad 检验 H1：特权信息的类型}
+
+\begin{frame}{H1：特权信息何时可教}
+\footnotesize
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{2.4cm} >{\raggedright\arraybackslash}p{2.9cm} Y >{\raggedright\arraybackslash}p{2.6cm}@{}}
+\toprule
+$z$ 的类型 & 学生能否自己推出 $z$ & 例子 & 预测\\
+\midrule
+计算型 & 能（多算几步就行） & Vision-OPD 裁剪、OPHSD harness、d-OPSD self-future & 有益\\
+信息型，任务短 & 不能，但不需要试错 & GUI-SD 目标框、短预算 instruct 模型 & 有益\\
+信息型，长推理 & 不能，且需要试错 & thinking 模型 + 参考解法 & \textbf{退化}，$z$ 信息越多越严重\\
+\bottomrule
+\end{tabularx}
+\par\vspace{4pt}
+\small
+\begin{itemize}
+  \setlength\itemsep{2pt}
+  \item \textbf{直觉}：学生能推出 $z$ 时，模仿老师等于把“多算几步”存进参数；推不出时，老师从不需要探索和检查，学生只学到“不用试错”的姿态。
+  \item \textbf{一致的证据}：Rethinking 中完整解法比只给答案退化更多；thinking 模型的反思明显减少，instruct 模型变化较小。
+  \item 这就是机器人模仿学习中的 imitation gap（Learning by Cheating、ADVISOR）。
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{H1 的统计量}
+\begin{stattable}
+按 $z$ 的类型比较 PMI & $z$ 分别为仅最终答案、完整解法、提示：各自的 $\PMI_t$ 分布和反思词的 $\PMI_t$。 & \cFwd{} 每种 & 信息越多，对反思的惩罚越重？\\
+按 $z$ 的类型训练 & 每种 $z$ 各训一次：留出题准确率、反思词频率。 & \cRun\newline\cEval & 哪种 $z$ 退化最多？\\
+模型类型 & thinking 模型与 instruct 模型，训练前后反思词频率的变化。 & \cRun & 需要试错的模型是否更受伤？\\
+准确率与预算 & 多个生成长度上限下的留出题准确率。 & \cEval & 预算越长是否越差？\\
+探索差距 & pass@$K$（$K$ 次采样至少一次答对的比例）：pass@64 减 pass@1。 & \cEval & 探索是否被压缩？\\
+\end{stattable}
+\vspace{2pt}
+\gnote{跨任务比较（图像裁剪、GUI 定位等）需要在其他任务上实验，超出本诊断的范围。}
+\end{frame}
+
+% =====================================================================
+\section{8.\quad 训练中监控}
+
+\begin{frame}{训练中监控（E4，1/2）：兼容度与反思}
+\begin{stattable}
+$S_t$ 剖面 & $S_t$ 的 $\mathrm p_{10}$、$\mathrm p_{50}$、$\mathrm p_{90}$ 随 $t/L$ 的变化；$S_t<0$ 的 token 比例。 & \cFree\newline\cFwd & 学生是否沿着 $z$ 的路线走？这个比例随训练怎么变？\\
+整段兼容度 & 做对与做错的回答上 $S_{L+1}$ 的分布。 & \cFree\newline\cFwd & 做对的回答是否更贴近 $z$？\\
+反思词 PMI 曲线 & 每步 $y_t\in\mathcal W$ 处 $\PMI_t$ 的均值，按 $S_t$ 的符号拆开。 & \cFree\newline\cFwd & 压制在反思词变少之前就能看到吗？\\
+反思词频率 & 每 1000 token 中 $\mathcal W$ 里的词数。 & \cFree & fork suppression 本身。\\
+信号与兼容度 & $\operatorname{corr}(S_t,\abs{d_t})$。 & \cFree\newline\cFwd & 不兼容的前缀上信号是否更极端？\\
+\end{stattable}
+\vspace{2pt}
+\gnote{老师同步时用 \cFree，冻结或 EMA 时需要 \cFwd{} 得到 $q^0_t$。不改损失，只加日志。}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{训练中监控（E4，2/2）：信号来源与漂移}
+\begin{stattable}
+方差分解 & $\operatorname{Var}(d_t)=\operatorname{Var}(\PMI_t)+\operatorname{Var}(\snap_t)+2\operatorname{Cov}(\PMI_t,\snap_t)$。 & \cFwd & 老师冻结或 EMA 时，信号来自答案，还是来自“拉回初始模型”？\\
+序列级恒等式 & 老师同步时：$\E_{y\sim\pit(\cdot\mid x)}[S_{L+1}]=-\KL\big(\pit(\cdot\mid x)\,\Vert\,\pit(\cdot\mid x,z)\big)$，KL 在整段回答的分布上取。 & \cFree & 学生是否在整体上向“看过答案的自己”靠拢（风格漂移）？\\
+对比 PMI & $\log\pitea(y_t\mid x,z^+,h_t)-\log\pitea(y_t\mid x,z^-,h_t)$，及其与 $\PMI_t$ 的相关。RLCSD、VA-OPD、VC-OPD 都用这类信号，区别只在 $z^-$ 怎么选。 & \cFwd & 多少信号来自风格而不是内容？\\
+答案泄漏 & 最终答案在 $y$ 中首次出现的相对位置；$y$ 与 $z$ 共享的 4-gram 比例。 & \cFree & 学生是在推理还是在背 $z$？\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{解读上面这些量，需要同时看的背景曲线}
+\begin{stattable}
+师生差距 & $-d_t$ 的均值（$\KL(p_t\Vert q_t)$ 的单样本估计），或直接算 $\KL(p_t\Vert q_t)$。 & \cFree{} / \cLog & 学生是否在接近老师？\\
+学生熵 & $\mathcal H(p_t)$ 的均值；$\mathcal H(p_t)<0.01$ 的 token 比例。 & \cFree & 是否熵坍缩？\\
+长度与截断 & $L$ 的均值和 $\mathrm p_{90}$；被生成上限截断的比例；做对与做错分开。 & \cFree & 回答在变长还是变短？\\
+留出题准确率 & pass@1 和 pass@$K$，按初始难度分桶。 & \cEval & 真的变强了吗？\\
+\end{stattable}
+\vspace{4pt}
+\gnote{完整的通用统计量（正确性检查、梯度、校准、表示等）见 main-zh.pdf 第一部分与 II.1。}
+\end{frame}
+
+% =====================================================================
+\section{9.\quad 混杂、判据与执行计划}
+
+\begin{frame}{混杂与对照：哪些结果可能是假象}
+\footnotesize
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries\raggedright\arraybackslash}p{2.2cm} Y >{\raggedright\arraybackslash}p{5.0cm}@{}}
+\toprule
+混杂 & 为什么是问题 & 对策\\
+\midrule
+位置 & $S_t$ 是累加量，天然随 $t$ 增长 & 增量检验与位置分层；F4 取平均\\
+模板与风格 & 老师的模板本身会改变分布，与 $z$ 的内容无关 & F7 用 $z^-$ 对比；E0 检查快照差为 0\\
+选择偏差 & 做对与做错的主干选位置的规则不同 & 两类结果分开报告\\
+答案 vs.\ 解法 & PW-OPSD 诊断给的是答案，训练可能给完整解法 & 两种 $z$ 都测\\
+正例稀少 & PW-OPSD 只有 8 个正例 & 只留初始通过率在 $[0.2,0.8]$ 的题；不到 40 个正例不下结论\\
+快照差 & 诊断时 $\bar\theta=\theta$，训练中未必 & 用 E4 检查结论能否迁移\\
+贝叶斯解读 & “$S_t$ 是读完前缀后对 $z$ 的后验提升”依赖一致的联合分布，LLM 不保证 & 只当直觉，以续写标签为准\\
+\bottomrule
+\end{tabularx}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{预先写下的判据}
+\footnotesize
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{@{}Y Y@{}}
+\toprule
+\textbf{结果} & \textbf{结论}\\
+\midrule
+E1：F3 或 F5 的 AUROC 不低于 F0，且增量的 CI 不含 0 & 支持 H2：兼容度提供位置之外的信息\\
+E1：增量的 CI 含 0，但位置分层内 F3/F5 的 AUROC $>0.6$ & 兼容度与位置大部分重合，H2 只部分成立\\
+E1：位置分层内 F3/F5 的 AUROC $\approx0.5$ & H2 不成立，位置效应另有原因\\
+E2：控制 $t/L$ 后，$\Delta_t$ 与 $S_t$ 的偏相关明显为正 & 支持“偏离 $z$ 的路线导致指导失真”\\
+E2：$\Delta_t$ 与 $S_t$ 无关 & LGR 的衰减不能用兼容度解释\\
+E3：$S_t<0$ 段的反思词 PMI 明显高于 $S_t\ge0$ 段 & 支持 H3：值得按前缀状态屏蔽\\
+F7 优于 F3 & 风格是噪声来源，对比基线是必要的\\
+\bottomrule
+\end{tabularx}
+\vspace{3pt}
+\gnote{正负结果都要保留。单个模型、单组题目的结果不能当作普遍结论。}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{执行计划：先做什么}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{最少要做的四件事}
+\footnotesize
+\begin{enumerate}
+  \setlength\itemsep{2pt}
+  \item E0：恒等式检查。
+  \item 训练日志里加上 $\log q^0_t(y_t)$，得到 $\PMI_t$ 和 $S_t$。
+  \item E3：按 $S_t$ 分组看反思词 PMI，不需要续写。
+  \item 阶段 A：60 道题跑 E1，先复现位置 AUROC。
+\end{enumerate}
+\end{block}
+\begin{exampleblock}{诊断成立之后（未实现）}
+\footnotesize
+后验混合老师；兼容度门控（$S_t$ 过低时减小特权信号的权重）。
+\end{exampleblock}
+\column{0.48\textwidth}
+\begin{block}{分阶段}
+\footnotesize
+\textbf{A.} 60 道题，跑 E0 和 E1；位置 AUROC 与 PW-OPSD 相近，才比较新特征。\\[3pt]
+\textbf{B.} 只留初始通过率在 $[0.2,0.8]$ 的题，扩到至少 40 个正例；跑完整的 E1--E3，$z$ 取答案和完整解法两种。\\[3pt]
+\textbf{C.} 在正在进行的 OPSD 或 STOPD 训练中加入 E4 日志。
+\end{block}
+\begin{block}{需要 dump 的字段}
+\footnotesize
+逐 token：$t$、$\log q_t(y_t)$、$\log q^0_t(y_t)$、$\log p_t(y_t)$、$y_t\in\mathcal W$ 标记。\\
+逐回答：$c$、$z$ 的类型、答案首次出现的位置。\\
+逐分支：位置、强制的 token、$n_{\mathrm{roll}}$、$\Vh$。
+\end{block}
+\end{columns}
+\end{frame}
+
+% =====================================================================
+\section{附录}
+
+\begin{frame}{缩写与符号索引}
+\scriptsize
+\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.12}
+\begin{columns}[T]
+\column{0.36\textwidth}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l Y@{}}
+\toprule
+OPSD & 在线自蒸馏：老师是看到 $z$ 的学生自己\\
+PMI & 点互信息\\
+EMA & 指数滑动平均\\
+PPO & 近端策略优化\\
+AUROC & ROC 曲线下面积\\
+CI & 置信区间\\
+E0--E4 & 本 slides 的五组实验\\
+H1--H3 & 三个假设（一页故事）\\
+F0--F7 & 逐 token 特征（第 4 节）\\
+\bottomrule
+\end{tabularx}
+\column{0.30\textwidth}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{符号} & \textbf{所在页}\\ \midrule
+$x,z,y,L,h_t$ & 记号 1\\
+$\theta,\theta_0,\bar\theta$ & 记号 1\\
+$\pit,\pitea$ & 记号 1\\
+$p_t,q_t,q^0_t,d_t,c$ & 记号 1\\
+$\PMI_t,\snap_t,r_t$ & 记号 2\\
+$S_t,\pi(h_t\mid x)$ & 记号 3\\
+$\mathcal V,a,\hat y_t,T_m$ & 记号 4\\
+$\mathcal H,\KL,\mathcal W$ & 记号 4\\
+\bottomrule
+\end{tabular}
+\column{0.30\textwidth}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{符号} & \textbf{所在页}\\ \midrule
+$z^+,z^-$ & 记号 4\\
+$\E,\Pr,\operatorname{Var},\operatorname{Cov}$ & 记号 4\\
+$\AUROC,\rho_{\mathrm S},\operatorname{corr},\mathrm p_\alpha$ & 记号 4\\
+$h\oplus a,\Vh,n_{\mathrm{roll}}$ & 分支续写\\
+$\Delta_t$ & 分支续写\\
+$K$ & H1\\
+\bottomrule
+\end{tabular}
+\end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}[allowframebreaks]{参考文献}
+\scriptsize
+\begin{itemize}
+  \setlength\itemsep{0pt}
+  \item Rethinking On-Policy Self-Distillation for Thinking Models. arXiv:2607.05184, 2026.
+  \item When Are Teacher Tokens Reliable? Position-Weighted On-Policy Self-Distillation for Reasoning (PW-OPSD). arXiv:2605.21606, 2026.
+  \item RLCSD: Reinforcement Learning with Contrastive On-Policy Self-Distillation. arXiv:2606.11709, 2026.
+  \item Your Teacher Can't Help You Here: Combating Supervision Fidelity Decay in On-Policy Distillation (LGR). arXiv:2605.30833, 2026.
+  \item Trust Region On-Policy Distillation (TrOPD). arXiv:2606.01249, 2026.
+  \item The Many Faces of On-Policy Distillation: Pitfalls, Mechanisms, and Fixes. arXiv:2605.11182, 2026.
+  \item Visual-Advantage On-Policy Distillation for Vision-Language Models (VA-OPD). arXiv:2605.21924, 2026.
+  \item VC-OPD: Visual Counterfactual On-Policy Distillation for Grounded Vision-Language Reasoning. arXiv:2610.14939, 2026.
+  \item Vision-OPD: Learning to See Fine Details for Multimodal LLMs via On-Policy Self-Distillation. arXiv:2605.18740, 2026.
+  \item Training with Harnesses: On-Policy Harness Self-Distillation for Complex Reasoning (OPHSD). arXiv:2605.08741, 2026.
+  \item Learning from the Self-future: On-policy Self-distillation for dLLMs (d-OPSD). arXiv:2606.18195, 2026.
+  \item Learn where to Click from Yourself: On-Policy Self-Distillation for GUI Grounding (GUI-SD). arXiv:2605.00642, 2026.
+  \item Does On-Policy Distillation Need to Complete Every Rollout? (STOPD). Code: github.com/YouAreSpecialToMe/STOPD, 2026.
+  \item D.~Chen et al. Learning by Cheating. CoRL 2019. arXiv:1912.12294.
+  \item L.~Weihs et al. Bridging the Imitation Gap by Adaptive Insubordination (ADVISOR). NeurIPS 2021. arXiv:2007.12173.
+\end{itemize}
+\end{frame}
+
+\end{document}

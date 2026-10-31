@@ -9,6 +9,7 @@
 - [方法RoadMap](On-Policy-Distillation/RoadMap/README.md)：SFT、PPO、GRPO、OPD、OPSD的数学组件与论文改动位置。
 - [论文认知与关键公式](On-Policy-Distillation/RoadMap/论文一句话认知.md) · [交互浏览器](On-Policy-Distillation/RoadMap/index.html)。
 - [研究idea](On-Policy-Distillation/idea/)：区分已有理论、待验证假设和实验观察。
+- [OPSD Profiling Slides](On-Policy-Distillation/Profiling-Slides/README.md)：OPSD实验诊断统计量与idea 003统计量的Beamer slides（PDF＋LaTeX源码）。
 
 ## 归档状态
 
@@ -28,6 +29,7 @@
     ├── 多模态与交互/
     ├── 其他应用/
     ├── RoadMap/
+    ├── Profiling-Slides/
     └── idea/
 ```
 

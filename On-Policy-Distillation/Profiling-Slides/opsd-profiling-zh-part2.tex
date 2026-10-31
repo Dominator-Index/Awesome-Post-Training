@@ -1,0 +1,368 @@
+% =====================================================================
+%                              第二部分
+% =====================================================================
+\begin{frame}[standout]
+第二部分\\[6pt]
+{\normalsize 针对一个假设的统计量：\\ 特权信息 PMI 与前缀兼容度（idea 003）}
+\end{frame}
+
+\section{II.0\quad 记号与假设}
+
+\begin{frame}{第二部分记号（1/3）：分解信号}
+\emph{不带} $z$ 的老师网络，使用与学生相同的 prompt 模板：\ \ $q^0_t=\pitea(\cdot\mid x,h_t)$。
+\begin{eqbox}
+\[
+d_t=\underbrace{\log q_t(y_t)-\log q^0_t(y_t)}_{\mathrm{PMI}_t}
++\underbrace{\log q^0_t(y_t)-\log p_t(y_t)}_{\Delta^{\mathrm{snap}}_t}
+\]
+\end{eqbox}
+\begin{itemize}
+  \setlength\itemsep{3pt}
+  \item $\mathrm{PMI}_t$（得名于点互信息）：看到 $z$ 让老师对 $y_t$ 的 log 概率提高了多少。
+  \item $\Delta^{\mathrm{snap}}_t$（快照差）：老师参数与学生参数之间的差异。
+  \item 若在 rollout 时令 $\bar\theta=\theta$，则一步中的第一个 mini-batch 上 $\Delta^{\mathrm{snap}}_t=0$，此时 $d_t=\mathrm{PMI}_t$，$\mathrm{PMI}_t$ 不需要额外计算。之后的 mini-batch 上 $\Delta^{\mathrm{snap}}_t=-\log r_t$（$r_t$ 见 C 节）。
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{第二部分记号（2/3）：前缀兼容度}
+对任意策略 $\pi$，前缀的概率为 $\pi(h_t\mid x)=\prod_{u=1}^{t-1}\pi(y_u\mid x,h_u)$，上下文中带 $z$ 时同理。由链式法则：
+\begin{eqbox}
+\[
+S_t=\sum_{u=1}^{t-1}\mathrm{PMI}_u=\log\frac{\pitea(h_t\mid x,z)}{\pitea(h_t\mid x)},\qquad S_1=0
+\]
+\end{eqbox}
+\begin{itemize}
+  \setlength\itemsep{3pt}
+  \item $S_t>0$：看到 $z$ 时这段前缀更可能出现；它沿着 $z$ 的路线走。
+  \item $S_t<0$：前缀已经离开这条路线，例如换了方法或出了错。
+  \item $S_t\approx0$：还没有证据，常见于回答的开头。
+\end{itemize}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{第二部分记号（3/3）：其他符号}
+\begin{symtable}
+$\mathcal H(p)=-\sum_{a}p(a)\log p(a)$ & $\mathcal V$ 上的分布 $p$ 的熵\\
+$\mathrm p_{1},\ \mathrm p_{5},\ \mathrm p_{10},\ \mathrm p_{50},\ \dots$ & 百分位数，定义方式同 $\pct$\\
+$\operatorname{Var}$, $\operatorname{Cov}$, $\operatorname{corr}$ & 在 token 上计算的方差、协方差、Pearson 相关\\
+$T_m(p)$;\ \ $\operatorname{rank}_p(a)$ & 概率最高的 $m$ 个 token；比 $a$ 概率更高的 token 数加一\\
+$\hat y_t=\arg\max_a q_t(a)$;\ \ $\mathrm{eos}$ & 老师在 $t$ 处的 top-1 token；序列结束 token\\
+$\mathcal W$ & 反思词：wait、but、hmm、let me check、actually、alternatively\\
+$z^+$;\ \ $z^-$ & 正确参考（$z^+=z$）；同一模板下的错误参考\\
+$\pi(y\mid x)$,\ \ $\pi(y\mid x,z)$ & $\prod_{t=1}^{L}\pi(y_t\mid x,h_t)$：整段回答的概率（带 $z$ 时同理）\\
+\end{symtable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{第二部分：待检验的假设（均未检验）}
+\small
+\begin{itemize}
+  \setlength\itemsep{1pt}
+  \item \textbf{H1（可推得性）。}学生自己能推出 $z$ 时（例如图像裁剪），OPSD 有益。在长推理上，学生推不出 $z$ 时（例如参考解法），OPSD 有害，且 $z$ 携带的信息越多，危害越大。
+  \item \textbf{H2（看兼容度，不看位置）。}老师在 $t$ 处的指导是否有用，取决于 $S_t$，而不是相对位置 $t/L$。
+  \item \textbf{H3（反思 token）。}$\mathcal W$ 中的 token 在 $S_t\ge0$ 处 $\mathrm{PMI}_t$ 为负，在 $S_t<0$ 处 $\mathrm{PMI}_t$ 接近 0 或为正。
+\end{itemize}
+\footnotesize
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l Y@{}}
+\toprule
+假设 & 关键统计量\\
+\midrule
+H1 & 按 $z$ 的类型分的 $\mathrm{PMI}_t$（II.4）；反思词频率（II.6）；准确率随生成预算的变化（II.1）\\
+H2 & 可靠性 AUROC、增量价值、按位置分层的 AUROC、帮助度与兼容度的关系（II.5）\\
+H3 & 反思词的 $\mathrm{PMI}_t$，按 $S_t$ 的符号和回答对错拆分（II.4）\\
+\bottomrule
+\end{tabularx}
+\end{frame}
+
+% =====================================================================
+\section{II.1\quad 训练健康度与任务指标}
+
+\begin{frame}{II.1 训练健康度（1/2）：训练稳定吗？}
+\begin{stattable}
+损失与梯度范数 & 损失；裁剪前的梯度范数；因梯度出现非有限值而跳过的步数比例。 & \cFree & 训练稳定吗？\\
+裁剪比例、近似 KL & $\epsilon_{\mathrm{clip}}$：PPO 的裁剪范围。$r_t\notin[1-\epsilon_{\mathrm{clip}},1+\epsilon_{\mathrm{clip}}]$ 的 token 比例；$\log\piold(y_t\mid x,h_t)-\log\pit(y_t\mid x,h_t)$ 的均值（verl：\texttt{pg\_clipfrac}、\texttt{ppo\_kl}）。 & \cFree & 一步把策略移动了多远。\\
+学生熵 & $\mathcal H(p_t)$：均值、$\mathrm p_{10}$、$\mathrm p_{50}$、$\mathrm p_{90}$，以及 $\mathcal H(p_t)<0.01$ 的 token 比例。 & \cFree & 熵坍缩了吗？\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.1 训练健康度（2/2）：输出与引擎}
+\begin{stattable}
+长度与截断 & $L$：均值、$\mathrm p_{50}$、$\mathrm p_{90}$、最大值；在 $\mathrm{eos}$ 之前被生成上限截断的回答比例。 & \cFree & OPSD 让回答变长还是变短？预算够吗？\\
+退化输出 & 出现重复循环、格式错误（例如没有 \texttt{\textbackslash boxed\{\}}）或语言混杂的回答比例。 & \cFree & 输出在退化吗？\\
+引擎不一致 & $\pi_{\mathrm{inf}}$：推理引擎在采样时给出的概率。$\abs{\log\pi_{\mathrm{inf}}(y_t\mid x,h_t)-\log\piold(y_t\mid x,h_t)}$ 的最大值和 $\pct$（\texttt{ray\_trainer.py:1153}）。 & \cFree & 隐藏的离策略程度。\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.1 任务指标（1/2）：准确率与探索}
+\begin{stattable}
+在线准确率 & 训练 batch 上 $c_i$ 的均值；即使 $c_i$ 不进入损失也要记录。 & \cFree & 学生在进步吗？\\
+pass@$K$ 曲线 & $K$：尝试次数。某题有 $n_{\mathrm{smp}}$ 个样本，其中 $n_{\mathrm{cor}}$ 个正确：$\text{pass@}K=1-\binom{n_{\mathrm{smp}}-n_{\mathrm{cor}}}{K}\big/\binom{n_{\mathrm{smp}}}{K}$（Chen et al.\ 2021），对题目取平均，$K=1,2,4,\dots,64$。 & \cEval & 蒸馏是否缩小了学生能找到的解的范围？\\
+maj@$K$ & $K$ 个样本中出现最多的答案为正确答案的题目比例。 & \cEval & 投票后的准确率。\\
+探索差距 & pass@64 减去 pass@1。 & \cEval & 多样性是否被压缩？\\
+难度分桶 & $\acc_{\theta_0}(x)$：$\theta_0$ 下 $x$ 的样本答对比例。分桶 $\{0\}$、$(0,\tfrac12]$、$(\tfrac12,1)$、$\{1\}$；每桶准确率随训练的变化。 & \cEval & 哪些题提升，哪些题退步？\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.1 任务指标（2/2）：退步、上限、预算}
+\begin{stattable}
+逐题翻转 & 至少一半样本正确的题算作已解出。在 $\theta_0$ 与最终 checkpoint 之间统计：未解出$\to$解出、解出$\to$未解出、始终未解出、始终解出的题数。 & \cEval & 是否有题目变差？\\
+模仿差距 & 老师在上下文中带 $z$ 作答（从 $\pitea(\cdot\mid x,z)$ 采样）的 $\acc$ 减去学生的 $\acc$。 & \cEval & 老师最多能把学生拉高多少？\\
+准确率 vs.\ 预算 & 若干生成上限下的 $\acc(\mathcal D_{\mathrm{held}})$。 & \cEval & 预算越长是否越差？（Rethinking OPSD 报告过）\\
+按对错分的长度 & 分别计算 $c_i=1$ 和 $c_i=0$ 的回答的平均 $L_i$。 & \cFree & 长度与正确性的关系。\\
+\end{stattable}
+\vspace{2pt}
+\gnote{领域外准确率见第一部分 G 节。}
+\end{frame}
+
+% =====================================================================
+\section{II.2\quad 信号 $d_t$}
+
+\begin{frame}{II.2 信号 $d_t$（1/2）：分布}
+\begin{stattable}
+形状 & 均值 $\mu_d$、标准差 $\sigma_d$、$\mathrm p_{1}$、$\mathrm p_{5}$、$\mathrm p_{50}$、$\mathrm p_{95}$、$\pct$、最小值、最大值、峰度 $\E[(d_t-\mu_d)^4]/\sigma_d^4$。 & \cFree & 信号是重尾的吗？\\
+符号与尾部 & $\Pr(d_t>0)$、$\Pr(d_t<-5)$、$\Pr(\abs{d_t}>2)$。 & \cFree & 主要在推高 token，还是在压低？\\
+近零占比 & $\Pr(\abs{d_t}<\epsilon_{\mathrm{low}})$，$\epsilon_{\mathrm{low}}$ 见 B 节。 & \cFree & 多少 token 几乎没有得到监督？\\
+回答层面 & $\sum_t d_{i,t}$、$\bar d_i$，以及回答内 $d_{i,t}$ 的方差。 & \cFree & 回答之间差别有多大。\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.2 信号 $d_t$（2/2）：落在哪里}
+\begin{stattable}
+位置分桶 & 把 $t/L$ 等分成 10 个桶；每桶 $d_t$ 的均值和方差。 & \cFree & 位置效应；PW-OPSD 与 LGR 的结论相反。\\
+按对错 & 分别计算 $c_i=1$ 和 $c_i=0$ 的回答上 $d_{i,t}$ 的均值。 & \cFree & 老师是否还在改写已经正确的回答？\\
+结束符信号 & 每个位置的 $\log q_t(\mathrm{eos})-\log p_t(\mathrm{eos})$。 & \cLog & 长度变化是不是因为老师在推动更早或更晚结束？\\
+Token 类别 & $\mathcal W$ 中的词、数字、公式符号、格式 token、答案 token（$t\in\mathcal S_i$）各自的平均 $d_t$。 & \cFree & 哪类 token 承载了信号？\\
+\end{stattable}
+\end{frame}
+
+% =====================================================================
+\section{II.3\quad 师生分布差距}
+
+\begin{frame}{II.3 分布差距（1/2）：$p_t$ 与 $q_t$ 相差多远？}
+\begin{stattable}
+逐 token 散度 & $\KL(p_t\Vert q_t)$、$\KL(q_t\Vert p_t)$；$\mathrm{JSD}=\frac12\KL(p_t\Vert m_t)+\frac12\KL(q_t\Vert m_t)$，其中 $m_t=\frac12(p_t+q_t)$；$\mathrm{TV}=\frac12\sum_a\abs{p_t(a)-q_t(a)}$。 & \cLog & 差距有多大；在正向和反向 KL 之间切换影响有多大。\\
+Top-1 一致率 & $\Pr\big[\arg\max_a p_t(a)=\hat y_t\big]$。 & \cLog & 两者想要的下一个 token 相同吗？\\
+老师眼中的样本 & $q_t(y_t)$ 和 $\operatorname{rank}_{q_t}(y_t)$。 & \cFree\newline\cLog & 学生是否经常写出老师认为不太可能的 token？\\
+Top-10 重合度 & $\abs{T_{10}(p_t)\cap T_{10}(q_t)}\big/\abs{T_{10}(p_t)\cup T_{10}(q_t)}$。 & \cLog & 两者的候选集有多相似？\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.3 分布差距（2/2）：熵与近似误差}
+\begin{stattable}
+老师熵 & $\mathcal H(q_t)$，以及 $(\mathcal H(p_t),\mathcal H(q_t))$ 的二维直方图。 & \cLog & 哪里老师很确定而学生在犹豫（SEAD 就按这种方式划分 token）。\\
+Top-$m$ 质量 & 截断损失只保留 $m$ 个 token 时的 $\sum_{a\in T_m(q_t)}q_t(a)$。 & \cLog & 用 top-$m$ 近似 KL 时忽略掉的概率质量。\\
+单样本 vs.\ 精确值 & $-d_t$ 是 $\KL(p_t\Vert q_t)$ 的无偏估计；报告 $\operatorname{corr}(-d_t,\KL(p_t\Vert q_t))$。 & \cLog & 单样本信号的噪声（vOPD）；梯度层面的版本见 C 节。\\
+\end{stattable}
+\end{frame}
+
+% =====================================================================
+\section{II.4\quad PMI 分解与前缀兼容度}
+
+\begin{frame}{II.4 恒等式检查：最先做}
+\small
+在约 20 个回答上先做以下检查，再相信本部分的任何统计量：
+\begin{enumerate}
+  \setlength\itemsep{4pt}
+  \item \textbf{求和恒等式。}检查
+  \[
+  \sum_{t=1}^{L}\mathrm{PMI}_t=\log\pitea(y\mid x,z)-\log\pitea(y\mid x)
+  \]
+  其中整段回答的 log 概率单独计算；每 token 的误差应小于 $10^{-3}$。
+  \item \textbf{token 相同。}回答的 token id 在两种 prompt 模板（带 $z$ 与不带 $z$）中完全相同。
+  \item \textbf{记录的信号。}$\bar\theta$ 与 $\theta$ 同步时，训练中记录的 $d_t$ 等于离线重算的 $\mathrm{PMI}_t$。
+\end{enumerate}
+\gnote{成本：\cFwd{} 一次。这些检查是对 A 节通用检查的补充。}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.4 逐 token 特征（idea 003，F0--F7）}
+\scriptsize
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l >{\raggedright\arraybackslash}p{3.3cm} Y >{\centering\arraybackslash}p{1.6cm}@{}}
+\toprule
+编号 & 特征 & 定义 & 成本\\
+\midrule
+F0 & 相对位置（基线） & $(t-0.5)/L$ & \cFree\\
+F1 & 老师熵（基线） & 把 $q_t$ 限制在 $T_{16}(q_t)$ 上并重新归一化后的 $\mathcal H$（PW-OPSD） & \cLog\\
+F2 & PMI & $\mathrm{PMI}_t$ & \cFree{} / \cFwd\\
+F3 & 累计 PMI & $S_t$ & 同 F2\\
+F4 & 平均累计 PMI & $S_t/(t-1)$，$t\ge2$ & 同 F2\\
+F5 & 局部特权散度 & 在 $T_{64}(q_t)\cup T_{64}(q^0_t)$ 上、其余 token 合并为一个桶时的 $\KL(q_t\Vert q^0_t)$ & \cLog\\
+F6 & 候选 PMI & 对 $a\in T_3(q_t)$ 计算 $\log q_t(a)-\log q^0_t(a)$：取最大值和均值 & \cLog\\
+F7 & 对比累计 PMI & $\sum_{u=1}^{t-1}\big[\log\pitea(y_u\mid x,z^+,h_u)-\log\pitea(y_u\mid x,z^-,h_u)\big]$ & \cFwd\\
+\bottomrule
+\end{tabularx}
+\vspace{2pt}
+\gnote{$\bar\theta=\theta$ 时 F2--F4 为 \cFree{}。F7 把 $z$ 的内容与参考解法的风格分开。II.5 检验 F0--F7 作为可靠性预测因子的效果。}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.4 训练中的 PMI 统计量（1/2）}
+\gnote{本页和下一页中，$\bar\theta=\theta$ 时成本为 \cFree{}，否则为 \cFwd{}。}\par\vspace{1pt}
+\begin{stattable}
+PMI 分布 & $\mathrm{PMI}_t$ 的分布：整体、按位置桶、按 token 类别。 & \cFree\newline\cFwd & $z$ 偏好或惩罚哪些 token？\\
+方差分解 & $\operatorname{Var}(d_t)=\operatorname{Var}(\mathrm{PMI}_t)+\operatorname{Var}(\Delta^{\mathrm{snap}}_t)+2\operatorname{Cov}(\mathrm{PMI}_t,\Delta^{\mathrm{snap}}_t)$。 & \cFwd & 老师固定或用 EMA 时，$d_t$ 主要由哪一部分驱动？\\
+兼容度剖面 & $S_t$ 的百分位数随 $t$ 的变化；$S_t<0$ 的 token 比例；正确与错误回答上 $S_{L+1}$ 的分布。 & \cFree\newline\cFwd & 前缀是否沿着 $z$ 的路线走？\\
+兼容度 vs.\ 信号 & $\operatorname{corr}(S_t,\abs{d_t})$。 & \cFree\newline\cFwd & 在不兼容的前缀上，信号是否更极端？\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.4 训练中的 PMI 统计量（2/2）}
+\begin{stattable}
+反思词 PMI（H3） & $y_t\in\mathcal W$ 处的平均 $\mathrm{PMI}_t$：正确 vs.\ 错误回答；错误回答内部，$S_t\ge0$ vs.\ $S_t<0$。对照组：位置匹配、不在 $\mathcal W$ 中的 token。 & \cFree\newline\cFwd & 压制是否取决于前缀状态？\\
+对比 PMI & $\log\pitea(y_t\mid x,z^+,h_t)-\log\pitea(y_t\mid x,z^-,h_t)$。 & \cFwd & 去掉参考风格之后的内容效应（RLCSD）。\\
+按 $z$ 的类型分 & $z$ 分别为仅最终答案、完整解法、提示时的同样统计量。 & 每种类型 \cFwd & 信息越多，危害越大？（H1）\\
+序列层面 & $\bar\theta=\theta$ 时：$\E_{y\sim\pit(\cdot\mid x)}[S_{L+1}]=-\KL\big(\pit(\cdot\mid x)\,\Vert\,\pit(\cdot\mid x,z)\big)$。 & \cFree & 训练是否在把 $\pit(\cdot\mid x)$ 拉向 $\pit(\cdot\mid x,z)$？\\
+\end{stattable}
+\end{frame}
+
+% =====================================================================
+\section{II.5\quad 前缀可靠性：分支续写}
+
+\begin{frame}{II.5 分支标签：什么时候跟着老师走有帮助？}
+\small
+\textbf{主干（spine）}：一个固定的学生回答（正确：$c=1$；错误：$c=0$）。$h\oplus a$：前缀 $h$ 后接 token $a$。$\hat V(h)$：从 $h$ 出发、不带 $z$ 的 $n_{\mathrm{roll}}$ 次学生续写中正确的比例。
+\begin{columns}[T]
+\column{0.49\textwidth}
+\begin{block}{正确主干（PW-OPSD 协议）}
+\footnotesize
+每题最多取 F1 最高的 5 个位置；对每个 $a\in T_3(q_t)$ 强制续写；$n_{\mathrm{roll}}=6$。\\
+\textbf{多解（diversity）}：至少两个候选达到 $\hat V(h_t\oplus a)\ge0.75$。\\
+\textbf{真不确定（real-uncertain）}：所有候选及其均值都低于 $0.40$。\\
+其余为\textbf{灰区（gray）}，不计入 AUROC。
+\end{block}
+\column{0.47\textwidth}
+\begin{block}{错误主干（帮助度标签）}
+\footnotesize
+每条主干取 5 个位置，在 $t/L$ 上均匀分布；$n_{\mathrm{roll}}=8$：
+\[
+\Delta_t=\hat V(h_t\oplus\hat y_t)-\hat V(h_t\oplus y_t)
+\]
+$\Delta_t>0$：老师的 top-1 token 对不带 $z$ 的学生有帮助。若 $\hat y_t=y_t$，令 $\Delta_t=0$，并报告这种情况的频率。
+\end{block}
+\end{columns}
+\vspace{2pt}
+\gnote{成本 \cBr：正确主干需要 题数$\times5\times3\times6$ 次续写，错误主干需要 题数$\times5\times2\times8$ 次。}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.5 分支标签上的统计量}
+\begin{stattable}
+可靠性 AUROC & F0--F7 各自区分真不确定与多解的 AUROC，先减去每题的平均分；按题目 bootstrap 的 95\% CI（2000 次重采样）。 & \cBr & 兼容度能否胜过位置？\\
+增量价值 & 5 折逻辑回归，按题目划分折：F0 加一个特征的留出 AUROC，减去只用 F0 的留出 AUROC，附 bootstrap CI。 & \cOff & 位置之外的信息。\\
+按位置分层的 AUROC & 在 $t/L$ 的每个三分段内，F3 和 F5 的 AUROC。 & \cOff & 把兼容度与“兼容度和位置的相关性”分开。\\
+帮助度 vs.\ 兼容度 & $\rho_{\mathrm S}(\Delta_t,S_t)$；给定 $t/L$ 的偏相关（两者分别对 $t/L$ 回归后残差的相关）；$S_t\ge0$ 与 $S_t<0$ 时的平均 $\Delta_t$。 & \cBr & 偏离 $z$ 的路线是否使指导失真（LGR）？\\
+救回与背书 & 救回：在 $\hat V(h_t)\le0.1$ 处 $\hat V(h_t\oplus\hat y_t)$ 的均值。错误步：$\hat V(h_{t+1})\le\hat V(h_t)-0.3$；错误步中 $\mathrm{PMI}_t>0$ 的比例。 & \cBr & 老师能救回正在失败的学生吗？会为错误背书吗？\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.5 预先登记的判据（来自 idea 003）}
+\footnotesize
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\linewidth}{@{}Y Y@{}}
+\toprule
+\textbf{结果} & \textbf{结论}\\
+\midrule
+F3 或 F5 的 AUROC $\ge$ F0 的，且增量的 CI 不含 0 & 支持 H2：兼容度提供了位置之外的信息\\
+增量的 CI 含 0，但在位置三分段内 F3/F5 的 AUROC $>0.6$ & 兼容度与位置大部分重合，H2 只部分成立\\
+位置三分段内 F3/F5 的 AUROC $\approx0.5$ & H2 不成立，位置效应另有原因\\
+给定 $t/L$ 时 $\Delta_t$ 与 $S_t$ 的偏相关明显为正 & 支持“偏离 $z$ 的路线导致指导失真”\\
+$\Delta_t$ 与 $S_t$ 无关 & LGR 的衰减不能用兼容度解释\\
+$S_t<0$ 段上反思词的 PMI 明显更高 & 支持 H3：值得尝试按前缀状态屏蔽\\
+F7 优于 F3 & 风格是噪声来源，对比基线是必要的\\
+\bottomrule
+\end{tabularx}
+\gnote{正负结果都要保留。单个模型、单组题目上的结果不能当作普遍结论。}
+\end{frame}
+
+% =====================================================================
+\section{II.6\quad 推理行为与多样性}
+
+\begin{frame}{II.6 推理行为与多样性（1/2）}
+\begin{stattable}
+反思词频率 & 每 1000 token 中 $\mathcal W$ 里的词出现的次数。 & \cFree & 分叉抑制（fork suppression）：学生是否不再自我检查？\\
+自我纠正 & 中途改变所给答案的回答比例；其中改成正确答案和改成错误答案的比例。 & \cFree & 纠错是否被抑制？\\
+同题多样性 & $G$ 个回答中：不同最终答案的个数；self-BLEU（Zhu et al.\ 2018）；两两嵌入距离的均值；两个回答第一次出现不同 token 的平均位置。 & \cFree{} / \cOff & 回答是否坍缩成同一种形式？\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.6 推理行为与多样性（2/2）}
+\begin{stattable}
+解法路线 & 用 LLM 评判按方法给 $G$ 个回答聚类；簇的个数。 & \cEval & 是否只剩下参考解法那一条路线？\\
+答案泄漏 & $y$ 与 $z$ 的重合：共享的 $n$-gram、ROUGE-L、最长公共子串；最终答案在 $y$ 中首次出现的相对位置。 & \cFree & 是在推理还是在背诵？答案出现得越来越早是警告信号。\\
+风格漂移 & 在初始模型下的困惑度 $\exp\!\big(-\frac1L\sum_t\log\pi_{\theta_0}(y_t\mid x,h_t)\big)$。 & \cFwd & 写作风格离初始模型有多远？\\
+\end{stattable}
+\vspace{2pt}
+\gnote{这里“$n$-gram”中的 $n$ 是片段长度，例如 4。含糊表达频率和语义熵见 E 节。}
+\end{frame}
+
+% =====================================================================
+\section{II.7\quad 参数动态与成本}
+
+\begin{frame}{II.7 参数动态}
+\begin{stattable}
+相对初始模型的漂移 & 在探针 token 上取平均的 $\KL\big(\pit(\cdot\mid x,h_t)\Vert\pi_{\theta_0}(\cdot\mid x,h_t)\big)$。 & \cFwd\newline\cLog & 模型移动了多远？\\
+老师漂移 & $q^{(k)}_t$：使用第 $k$ 步参数的老师分布。在 $\mathcal P$ 上计算 $\KL(q^{(k)}_t\Vert q^{(k-N)}_t)$。 & \cFwd\newline\cLog & $\bar\theta$ 跟随 $\theta$ 时，目标移动得有多快？\\
+蒸馏梯度 vs.\ RL 梯度 & $g_{\mathrm D}$、$g_{\mathrm{RL}}$：混合损失中蒸馏项和 RL 项的梯度。$\norm{g_{\mathrm D}}/\norm{g_{\mathrm{RL}}}$、$\cos(g_{\mathrm D},g_{\mathrm{RL}})$、余弦为负的层所占比例。 & \cGrad & 两个目标在互相打架吗？（Dr.OPD）\\
+逐层更新幅度 & $\theta^{(\ell)}$：第 $\ell$ 层的参数；$\norm{\Delta\theta^{(\ell)}_k}/\norm{\theta^{(\ell)}_k}$。 & \cFree & 哪些层在变？\\
+更新结构 & 对每个权重矩阵 $W$，取它在一个训练窗口内的变化 $\Delta W$：$\operatorname{erank}(\Delta W)$（D 节），以及 $\abs{\Delta W}$ 低于阈值 $\delta_W$ 的元素比例。 & \cOff & 更新是低秩的还是稀疏的？\\
+\end{stattable}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.7 成本}
+\begin{stattable}
+Token 计数 & 每步：生成的 token 数、老师打分的 token 数、为得到 $q^0_t$ 额外打分的 token 数。 & \cFree & 每一部分的开销。\\
+时间 & 老师打分占每步时间的比例；每步的墙钟时间；达到目标准确率所需的 GPU 小时。 & \cFree & 时间花在哪里。\\
+截断监督 & 若损失只保留部分 token，并按包含概率的倒数重新加权（例如 STOPD）：保留比例和最大权重。 & \cFree & 重新加权稳定吗？\\
+\end{stattable}
+\end{frame}
+
+% =====================================================================
+\section{II.8\quad 切片、执行计划与分阶段}
+
+\begin{frame}{II.8 切片与执行计划}
+\small
+\textbf{几乎每个统计量都按三种方式切片：}按判定 $c_i$；按初始难度桶（II.1）；按 $t/L$ 的位置桶（II.2）。很多效应只在切片内部才看得到，例如老师还在改写已经正确的回答的风格。\\[4pt]
+\scriptsize
+\setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{@{}>{\bfseries}l >{\raggedright\arraybackslash}p{2.4cm} Y@{}}
+\toprule
+档位 & 时机 / 数据 & 第二部分的统计量\\
+\midrule
+1 & 每步，完整训练 batch & II.1 训练健康度、在线准确率、按对错分的长度；II.2；II.4 在 $\bar\theta=\theta$ 时：$S_t$ 的百分位数、$S_t<0$ 的比例、反思词 PMI；II.6 反思词频率、自我纠正、答案泄漏；II.7 逐层更新幅度和成本。\\
+2 & 每 $N$ 步，探针集 $\mathcal P$ & II.3；II.4 中需要 $q^0_t$ 或 $z^-$ 的统计量；II.6 多样性和风格漂移；II.7 相对初始模型的漂移和老师漂移。\\
+3 & 离线 & II.1 评测指标；II.4 恒等式检查；II.5 分支标签及其统计量；II.7 更新结构。\\
+\bottomrule
+\end{tabularx}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{II.8 需要追加 dump 的字段，以及分阶段计划}
+\begin{columns}[T]
+\column{0.47\textwidth}
+\begin{block}{额外字段（在第一部分的 dump 之上）}
+\footnotesize
+逐 token：$\log q^0_t(y_t)$、$\mathcal H(p_t)$、$\mathcal H(q_t)$，各用 4 字节浮点数，外加 1 字节标记 $y_t\in\mathcal W$：共 13 字节。\\[2pt]
+逐回答：$z$ 的类型；最终答案首次出现的相对位置。\\[2pt]
+逐分支：位置 $t$、强制的 token、$n_{\mathrm{roll}}$、$\hat V$。
+\end{block}
+\column{0.49\textwidth}
+\begin{block}{分阶段（idea 003）}
+\footnotesize
+\textbf{A.} 60 道题：恒等式检查和正确主干标签；在比较新特征之前，先确认位置 AUROC 与 PW-OPSD 接近。\\[2pt]
+\textbf{B.} 题目数量要足以得到至少 40 个真不确定位置（保留初始通过率在 $[0.2,0.8]$ 的题）；做全部分支统计量和 H3。\\[2pt]
+\textbf{C.} 在正在进行的 OPSD 或 STOPD 训练中加入第 1 档的兼容度统计量。
+\end{block}
+\end{columns}
+\end{frame}

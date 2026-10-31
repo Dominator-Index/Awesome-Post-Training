@@ -6,6 +6,7 @@
 - [论文认知与关键公式](RoadMap/论文一句话认知.md) · [交互式浏览器](RoadMap/index.html)
 - [结构化目录CSV](论文目录.csv) · `manifest.jsonl`（本地文件） · `download_summary.json`（本地文件）
 - [研究idea](idea/) · [OPSD：老师可以看答案的理解](OPSD理解-老师可以看答案.md)
+- [OPSD Profiling Slides](Profiling-Slides/README.md)：[idea 003统计量](Profiling-Slides/idea003-stats.pdf) · [OPSD实验统计量（中文）](Profiling-Slides/opsd-profiling-zh.pdf) · [English](Profiling-Slides/opsd-profiling-en.pdf)
 
 ## 分类与数量
 
